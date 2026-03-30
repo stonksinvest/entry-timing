@@ -384,7 +384,10 @@ async function go() {
   document.getElementById("empty").style.display = "none";
   const r = document.getElementById("result");
   r.className = "v";
-  r.innerHTML = '<div class="loading-box">Fetching live data for ' + sym + '…<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
+  const cached = cacheGet(sym);
+  r.innerHTML = cached
+    ? '<div class="loading-box">Loading ' + sym + ' from cache…<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>'
+    : '<div class="loading-box">Fetching live data for ' + sym + '…<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
 
   try {
     const raw = await fetchAll(sym);
@@ -499,7 +502,7 @@ async function go() {
       <div class="card"><div class="ctitle">Entry Timing</div><div class="cbody">${entryText}</div></div>
       <div class="card"><div class="ctitle">Risk / Reward</div><div class="cbody">${riskText}</div></div>
 
-      <div class="disc">Live data: Alpha Vantage &middot; Not financial advice &middot; Free tier: 5 req/min, 500/day</div>
+      <div class="disc">${raw._cached ? '&#128190; Cached ' + (raw._cachedAge || '') + ' &middot; ' : 'Live data &middot; '}Alpha Vantage &middot; Not financial advice</div>
     `;
   } catch(e) {
     r.innerHTML = `<div class="err-box">⚠️ ${e.message}<br><br>The free Alpha Vantage tier allows 25 requests per day and 5 per minute. Wait 60 seconds and try again.</div>`;
