@@ -27,18 +27,16 @@ input::placeholder { color: #4a3f2f; }
 .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; }
 .chip { background: rgba(232,213,163,0.05); border: 1px solid rgba(232,213,163,0.1); color: #7a6a50; padding: 3px 9px; border-radius: 2px; font-family: monospace; font-size: 12px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .chip:active { background: rgba(232,213,163,0.15); color: #e8d5a3; }
-/* Summary card */
 .summary-card { padding: 16px; border-radius: 4px; margin-bottom: 12px; border-left: 3px solid; }
 .summary-card.bull { background: rgba(0,212,170,0.07); border-color: #00d4aa; }
 .summary-card.bear { background: rgba(255,77,77,0.07); border-color: #ff4d4d; }
 .summary-card.neut { background: rgba(245,166,35,0.07); border-color: #f5a623; }
 .summary-title { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; opacity: 0.7; }
 .summary-text { font-size: 14px; line-height: 1.7; color: #e8d5a3; }
-/* Ticker header */
 .ticker-hdr { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
 .tname { font-family: monospace; font-size: 18px; color: #e8d5a3; font-weight: 700; }
+.tcompany { font-size: 12px; color: #4a3f2f; }
 .badge { padding: 3px 10px; border-radius: 2px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; }
-/* Price row */
 .price-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 6px; margin-bottom: 12px; }
 .price-item { background: rgba(232,213,163,0.04); border: 1px solid rgba(232,213,163,0.1); padding: 8px 10px; border-radius: 3px; }
 .price-label { color: #4a3f2f; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px; }
@@ -46,19 +44,16 @@ input::placeholder { color: #4a3f2f; }
 .price-val.up { color: #00d4aa; }
 .price-val.down { color: #ff4d4d; }
 .price-val.warn { color: #f5a623; }
-/* Analyst bar */
 .analyst-bar { display: flex; gap: 0; margin-bottom: 12px; border-radius: 3px; overflow: hidden; height: 28px; }
 .abar-buy { background: rgba(0,212,170,0.7); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #0e0c09; }
 .abar-hold { background: rgba(245,166,35,0.6); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #0e0c09; }
 .abar-sell { background: rgba(255,77,77,0.6); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #0e0c09; }
 .abar-label { font-size: 10px; color: #4a3f2f; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 5px; }
-/* Signal chips */
 .signal-bar { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
 .sig { padding: 3px 9px; border-radius: 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; }
 .sig.bull { background: rgba(0,212,170,0.12); border: 1px solid rgba(0,212,170,0.3); color: #00d4aa; }
 .sig.bear { background: rgba(255,77,77,0.12); border: 1px solid rgba(255,77,77,0.3); color: #ff4d4d; }
 .sig.neut { background: rgba(232,213,163,0.08); border: 1px solid rgba(232,213,163,0.15); color: #c8b896; }
-/* Cards */
 .card { background: rgba(232,213,163,0.03); border: 1px solid rgba(232,213,163,0.08); padding: 14px; border-radius: 3px; margin-bottom: 8px; }
 .ctitle { color: #e8d5a3; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 7px; border-bottom: 1px solid rgba(232,213,163,0.1); padding-bottom: 5px; }
 .cbody { color: #a89880; font-size: 13px; line-height: 1.7; }
@@ -70,13 +65,11 @@ input::placeholder { color: #4a3f2f; }
 @keyframes blink{0%,100%{opacity:.15}50%{opacity:1}}
 .err-box { background: rgba(255,77,77,0.05); border: 1px solid rgba(255,77,77,0.2); padding: 12px 14px; border-radius: 3px; color: #ff6b6b; font-size: 13px; margin-bottom: 10px; line-height: 1.6; }
 .empty { color: #4a3f2f; font-size: 13px; text-align: center; margin-top: 40px; line-height: 1.8; }
-/* 52w bar */
 .week52-wrap { margin-bottom: 12px; }
 .week52-track { height: 6px; background: rgba(232,213,163,0.1); border-radius: 3px; position: relative; margin: 8px 0 4px; }
-.week52-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #ff4d4d, #f5a623, #00d4aa); }
+.week52-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg,#ff4d4d,#f5a623,#00d4aa); }
 .week52-dot { width: 10px; height: 10px; background: #e8d5a3; border-radius: 50%; position: absolute; top: -2px; transform: translateX(-50%); }
 .week52-labels { display: flex; justify-content: space-between; font-size: 10px; color: #4a3f2f; font-family: monospace; }
-/* Checklist */
 .ci { display: flex; align-items: flex-start; gap: 12px; padding: 11px 14px; margin-bottom: 6px; background: rgba(232,213,163,0.02); border: 1px solid rgba(232,213,163,0.08); border-radius: 3px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; transition: all 0.15s; }
 .ci.chk { background: rgba(0,212,170,0.06); border-color: rgba(0,212,170,0.25); }
 .cbox { width: 20px; height: 20px; border-radius: 3px; border: 1px solid rgba(232,213,163,0.2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #0e0c09; transition: all 0.15s; }
@@ -144,8 +137,356 @@ input::placeholder { color: #4a3f2f; }
 </div>
 
 <script>
-const AV_KEY = "78L3SVHLY4BTE2Q4";
 const TICKERS = ["SPY","QQQ","AAPL","NVDA","MSFT","VTI","AMZN","TSLA","BRK.B","GOOGL","META","JPM"];
+const CACHE_TTL = 15 * 60 * 1000;
+
+// ── Cache ────────────────────────────────────────────────────
+function cacheGet(sym) {
+  try {
+    const raw = localStorage.getItem("et2_" + sym);
+    if (!raw) return null;
+    const { data, ts } = JSON.parse(raw);
+    if (Date.now() - ts > CACHE_TTL) { localStorage.removeItem("et2_" + sym); return null; }
+    data._cached = true;
+    data._cachedAge = Math.floor((Date.now() - ts) / 60000);
+    return data;
+  } catch(e) { return null; }
+}
+function cacheSet(sym, data) {
+  try { localStorage.setItem("et2_" + sym, JSON.stringify({ data, ts: Date.now() })); } catch(e) {}
+}
+
+// ── Yahoo Finance via allorigins proxy ───────────────────────
+async function fetchYahoo(sym) {
+  const url = "https://query1.finance.yahoo.com/v8/finance/chart/" + sym + "?interval=1d&range=1y";
+  const proxy = "https://api.allorigins.win/get?url=" + encodeURIComponent(url);
+  const r = await fetch(proxy);
+  const j = await r.json();
+  const parsed = JSON.parse(j.contents);
+  const result = parsed?.chart?.result?.[0];
+  if (!result) throw new Error("No data found for \"" + sym + "\". Check the ticker and try again.");
+  return result;
+}
+
+async function fetchYahooQuote(sym) {
+  const url = "https://query1.finance.yahoo.com/v10/finance/quoteSummary/" + sym + "?modules=price,summaryDetail,defaultKeyStatistics,financialData,recommendationTrend";
+  const proxy = "https://api.allorigins.win/get?url=" + encodeURIComponent(url);
+  const r = await fetch(proxy);
+  const j = await r.json();
+  const parsed = JSON.parse(j.contents);
+  return parsed?.quoteSummary?.result?.[0];
+}
+
+// ── Compute SMA from closes array ────────────────────────────
+function computeSMA(closes, period) {
+  if (!closes || closes.length < period) return null;
+  const slice = closes.slice(-period);
+  return slice.reduce((a, b) => a + b, 0) / period;
+}
+
+// ── Compute RSI ──────────────────────────────────────────────
+function computeRSI(closes, period = 14) {
+  if (!closes || closes.length < period + 1) return null;
+  const recent = closes.slice(-(period + 1));
+  let gains = 0, losses = 0;
+  for (let i = 1; i < recent.length; i++) {
+    const diff = recent[i] - recent[i-1];
+    if (diff > 0) gains += diff; else losses -= diff;
+  }
+  const avgGain = gains / period;
+  const avgLoss = losses / period;
+  if (avgLoss === 0) return 100;
+  const rs = avgGain / avgLoss;
+  return 100 - (100 / (1 + rs));
+}
+
+// ── Main fetch ───────────────────────────────────────────────
+async function fetchAll(sym) {
+  const cached = cacheGet(sym);
+  if (cached) return cached;
+
+  const [chartData, quoteData] = await Promise.all([
+    fetchYahoo(sym),
+    fetchYahooQuote(sym).catch(() => null)
+  ]);
+
+  const meta = chartData.meta;
+  const closes = chartData.indicators?.quote?.[0]?.close?.filter(v => v !== null) || [];
+  const volumes = chartData.indicators?.quote?.[0]?.volume?.filter(v => v !== null) || [];
+
+  const price = meta.regularMarketPrice || closes[closes.length - 1];
+  const prev = meta.previousClose || meta.chartPreviousClose;
+  const changePct = prev ? ((price - prev) / prev * 100) : 0;
+  const sma50 = computeSMA(closes, 50);
+  const sma200 = computeSMA(closes, 200);
+  const rsi = computeRSI(closes, 14);
+
+  // From quoteSummary
+  const priceData   = quoteData?.price || {};
+  const summary     = quoteData?.summaryDetail || {};
+  const keyStats    = quoteData?.defaultKeyStatistics || {};
+  const finData     = quoteData?.financialData || {};
+  const recTrend    = quoteData?.recommendationTrend?.trend?.[0] || {};
+
+  const analystBuy  = (recTrend.strongBuy || 0) + (recTrend.buy || 0);
+  const analystHold = recTrend.hold || 0;
+  const analystSell = (recTrend.sell || 0) + (recTrend.strongSell || 0);
+  const totalAnalysts = analystBuy + analystHold + analystSell;
+
+  const result = {
+    sym,
+    name:           priceData.shortName || priceData.longName || sym,
+    sector:         priceData.sector?.longFmt || null,
+    price,
+    prev,
+    changePct,
+    high:           meta.regularMarketDayHigh || price,
+    low:            meta.regularMarketDayLow  || price,
+    volume:         meta.regularMarketVolume  || 0,
+    sma50,
+    sma200,
+    rsi,
+    week52High:     summary.fiftyTwoWeekHigh?.raw  || meta.fiftyTwoWeekHigh  || null,
+    week52Low:      summary.fiftyTwoWeekLow?.raw   || meta.fiftyTwoWeekLow   || null,
+    pe:             summary.trailingPE?.raw         || null,
+    fwdPE:          summary.forwardPE?.raw          || null,
+    eps:            keyStats.trailingEps?.raw        || null,
+    beta:           summary.beta?.raw               || null,
+    marketCap:      priceData.marketCap?.raw        || null,
+    dividendYield:  summary.dividendYield?.raw      || null,
+    profitMargin:   finData.profitMargins?.raw      || null,
+    revenueGrowth:  finData.revenueGrowth?.raw      || null,
+    analystTarget:  finData.targetMeanPrice?.raw    || null,
+    analystBuy,
+    analystHold,
+    analystSell,
+    totalAnalysts,
+  };
+
+  cacheSet(sym, result);
+  return result;
+}
+
+// ── Format helpers ───────────────────────────────────────────
+function fmtCap(n) {
+  if (!n) return null;
+  if (n >= 1e12) return "$" + (n/1e12).toFixed(1) + "T";
+  if (n >= 1e9)  return "$" + (n/1e9).toFixed(1)  + "B";
+  return "$" + (n/1e6).toFixed(0) + "M";
+}
+
+// ── Plain English summary ────────────────────────────────────
+function buildSummary(d) {
+  const { sym, price, sma200, sma50, rsi, week52High, week52Low, analystTarget, analystBuy, totalAnalysts, pe, revenueGrowth, changePct } = d;
+  const above200 = sma200 && price > sma200;
+  const pctOff52High = week52High ? ((week52High - price) / week52High * 100) : null;
+  const analystUpside = analystTarget ? ((analystTarget - price) / price * 100) : null;
+  const buyPct = totalAnalysts > 0 ? Math.round((analystBuy / totalAnalysts) * 100) : null;
+  const parts = [];
+
+  if (pctOff52High !== null) {
+    if (pctOff52High > 30) parts.push(sym + " is down " + pctOff52High.toFixed(0) + "% from its 52-week high — deep discount territory.");
+    else if (pctOff52High > 15) parts.push(sym + " is " + pctOff52High.toFixed(0) + "% off its highs — a notable pullback.");
+    else if (pctOff52High < 5) parts.push(sym + " is near its 52-week high — trading at a premium.");
+    else parts.push(sym + " is " + pctOff52High.toFixed(0) + "% off its 52-week high.");
+  }
+
+  if (above200) parts.push("It's in an uptrend (above its 200-day moving average).");
+  else if (sma200) parts.push("It's in a downtrend — below its 200-day moving average. Yellow flag.");
+
+  if (rsi !== null) {
+    if (rsi < 30) parts.push("RSI is deeply oversold (" + rsi.toFixed(0) + ") — could be a buying opportunity.");
+    else if (rsi < 40) parts.push("Momentum is weak (RSI " + rsi.toFixed(0) + ") but not extreme.");
+    else if (rsi > 75) parts.push("RSI is overbought (" + rsi.toFixed(0) + ") — may be due for a pullback.");
+    else if (rsi > 60) parts.push("Momentum is strong (RSI " + rsi.toFixed(0) + ").");
+  }
+
+  if (analystUpside !== null && totalAnalysts >= 3) {
+    if (analystUpside > 25) parts.push("Wall Street analysts have an average target of $" + analystTarget.toFixed(0) + " — " + analystUpside.toFixed(0) + "% upside from here.");
+    else if (analystUpside > 10) parts.push("Analysts see " + analystUpside.toFixed(0) + "% upside to their avg target of $" + analystTarget.toFixed(0) + ".");
+    else if (analystUpside < 0) parts.push("Analysts' avg target of $" + analystTarget.toFixed(0) + " is below the current price — they think it may be overvalued.");
+    else parts.push("Analysts' avg target is $" + analystTarget.toFixed(0) + " (" + analystUpside.toFixed(0) + "% upside).");
+  }
+
+  if (buyPct !== null && totalAnalysts >= 3) {
+    if (buyPct >= 70) parts.push(buyPct + "% of " + totalAnalysts + " analysts say Buy.");
+    else if (buyPct >= 50) parts.push(buyPct + "% of " + totalAnalysts + " analysts are bullish.");
+    else parts.push("Only " + buyPct + "% of analysts rate it a Buy — mixed sentiment.");
+  }
+
+  if (revenueGrowth !== null) {
+    const g = (revenueGrowth * 100).toFixed(0);
+    if (revenueGrowth > 0.2) parts.push("Revenue growing fast — +" + g + "% YoY.");
+    else if (revenueGrowth > 0.05) parts.push("Revenue growth solid at +" + g + "% YoY.");
+    else if (revenueGrowth < 0) parts.push("Revenue declining (" + g + "% YoY) — a concern.");
+  }
+
+  if (pe !== null && !isNaN(pe) && pe > 0) {
+    if (pe < 15) parts.push("P/E of " + pe.toFixed(0) + " looks cheap relative to the market.");
+    else if (pe > 50) parts.push("P/E of " + pe.toFixed(0) + " — growth expectations are baked in, paying a premium.");
+  }
+
+  if (parts.length === 0) parts.push("Analysis loaded for " + sym + ". Check the data points below.");
+
+  let bullScore = (above200?1:0) + (rsi&&rsi<40?1:0) + (analystUpside&&analystUpside>15?1:0) + (buyPct&&buyPct>=60?1:0) + (pctOff52High&&pctOff52High>20?1:0);
+  let bearScore = (!above200&&sma200?1:0) + (rsi&&rsi>70?1:0) + (analystUpside&&analystUpside<0?1:0) + (pctOff52High&&pctOff52High<3?1:0);
+  const cls = bullScore >= 3 ? "bull" : bearScore >= 2 ? "bear" : "neut";
+
+  return { text: parts.join(" "), cls };
+}
+
+// ── Verdict ──────────────────────────────────────────────────
+function getVerdict(d) {
+  const above200 = d.sma200 && d.price > d.sma200;
+  const above50  = d.sma50  && d.price > d.sma50;
+  const buyPct   = d.totalAnalysts > 0 ? Math.round((d.analystBuy/d.totalAnalysts)*100) : null;
+  const analystUpside = d.analystTarget ? ((d.analystTarget - d.price) / d.price * 100) : null;
+  let bull = 0, bear = 0;
+  if (above200) bull++; else if (d.sma200) bear += 2;
+  if (above50)  bull++; else if (d.sma50)  bear++;
+  if (d.rsi !== null) { if (d.rsi < 35) bull += 2; else if (d.rsi > 72) bear += 2; }
+  if (analystUpside > 20) bull++;
+  if (analystUpside < 0)  bear++;
+  if (buyPct >= 65) bull++;
+  if (buyPct < 40 && buyPct !== null) bear++;
+  if (bull >= 4)  return { v:"BUY",   c:"#00d4aa" };
+  if (bear >= 3)  return { v:"AVOID", c:"#ff4d4d" };
+  return              { v:"WAIT",  c:"#f5a623" };
+}
+
+// ── Signals ──────────────────────────────────────────────────
+function getSignals(d) {
+  const sigs = [];
+  const above200 = d.sma200 && d.price > d.sma200;
+  const above50  = d.sma50  && d.price > d.sma50;
+  const analystUpside = d.analystTarget ? ((d.analystTarget - d.price) / d.price * 100) : null;
+  const buyPct = d.totalAnalysts > 0 ? Math.round((d.analystBuy/d.totalAnalysts)*100) : null;
+  if (d.sma200) sigs.push(above200 ? {t:"Above 200-day MA",k:"bull"} : {t:"Below 200-day MA",k:"bear"});
+  if (d.sma50)  sigs.push(above50  ? {t:"Above 50-day MA",k:"bull"}  : {t:"Below 50-day MA",k:"bear"});
+  if (d.rsi !== null) {
+    if (d.rsi < 30) sigs.push({t:"RSI Oversold ("+d.rsi.toFixed(0)+")",k:"bull"});
+    else if (d.rsi > 70) sigs.push({t:"RSI Overbought ("+d.rsi.toFixed(0)+")",k:"bear"});
+    else sigs.push({t:"RSI "+d.rsi.toFixed(0),k:"neut"});
+  }
+  if (d.changePct > 2)  sigs.push({t:"Up "+d.changePct.toFixed(1)+"% today",k:"bull"});
+  if (d.changePct < -2) sigs.push({t:"Down "+Math.abs(d.changePct).toFixed(1)+"% today",k:"bear"});
+  if (analystUpside !== null && d.totalAnalysts >= 3) {
+    if (analystUpside > 15) sigs.push({t:"Analysts: +"+analystUpside.toFixed(0)+"% target",k:"bull"});
+    else if (analystUpside < 0) sigs.push({t:"Analysts: overvalued",k:"bear"});
+  }
+  if (buyPct !== null && d.totalAnalysts >= 3) {
+    if (buyPct >= 70) sigs.push({t:buyPct+"% analyst Buys",k:"bull"});
+    else if (buyPct < 40) sigs.push({t:"Mixed analyst ratings",k:"neut"});
+  }
+  if (d.revenueGrowth > 0.2)  sigs.push({t:"Revenue +"+(d.revenueGrowth*100).toFixed(0)+"%",k:"bull"});
+  if (d.revenueGrowth < 0)    sigs.push({t:"Revenue declining",k:"bear"});
+  return sigs;
+}
+
+// ── Main ─────────────────────────────────────────────────────
+async function go() {
+  const sym = document.getElementById("ti").value.trim().toUpperCase();
+  if (!sym) return;
+  document.getElementById("empty").style.display = "none";
+  const r = document.getElementById("result");
+  r.className = "v";
+  const isCached = !!cacheGet(sym);
+  r.innerHTML = '<div class="loading-box">' + (isCached ? "Loading " + sym + " from cache" : "Fetching live data for " + sym) + '…<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
+
+  try {
+    const d = await fetchAll(sym);
+    const above200 = d.sma200 && d.price > d.sma200;
+    const analystUpside = d.analystTarget ? ((d.analystTarget - d.price) / d.price * 100) : null;
+    const buyPct = d.totalAnalysts > 0 ? Math.round((d.analystBuy/d.totalAnalysts)*100) : null;
+    d.analystUpside = analystUpside;
+    d.buyPct = buyPct;
+
+    const { v: verdict, c: vColor } = getVerdict(d);
+    const signals = getSignals(d);
+    const { text: summaryText, cls: summaryCls } = buildSummary(d);
+    const changePctStr = (d.changePct >= 0 ? "+" : "") + d.changePct.toFixed(2) + "%";
+
+    // 52w bar
+    let week52HTML = "";
+    if (d.week52High && d.week52Low) {
+      const pos = Math.min(98, Math.max(2, ((d.price - d.week52Low) / (d.week52High - d.week52Low)) * 100));
+      week52HTML = `<div class="week52-wrap"><div class="abar-label">52-Week Range</div><div class="week52-track"><div class="week52-fill" style="width:100%"></div><div class="week52-dot" style="left:${pos.toFixed(0)}%"></div></div><div class="week52-labels"><span>Low $${d.week52Low.toFixed(0)}</span><span>Now $${d.price.toFixed(2)}</span><span>High $${d.week52High.toFixed(0)}</span></div></div>`;
+    }
+
+    // Analyst bar
+    let analystHTML = "";
+    if (d.totalAnalysts >= 3) {
+      const bw = Math.round((d.analystBuy/d.totalAnalysts)*100);
+      const hw = Math.round((d.analystHold/d.totalAnalysts)*100);
+      const sw = 100 - bw - hw;
+      analystHTML = `<div><div class="abar-label">Analyst Ratings — ${d.totalAnalysts} analysts${d.analystTarget ? " · Avg target $"+d.analystTarget.toFixed(0) : ""}</div><div class="analyst-bar">${bw>0?`<div class="abar-buy" style="width:${bw}%">${bw>15?bw+"% Buy":""}</div>`:""}${hw>0?`<div class="abar-hold" style="width:${hw}%">${hw>15?hw+"% Hold":""}</div>`:""}${sw>0?`<div class="abar-sell" style="width:${sw}%">${sw>15?sw+"% Sell":""}</div>`:""}</div></div>`;
+    }
+
+    // Fundamentals
+    const fundRows = [];
+    if (d.pe && d.pe > 0)              fundRows.push(["P/E",         d.pe.toFixed(0),                    d.pe<20?"up":d.pe>45?"warn":""]);
+    if (d.fwdPE && d.fwdPE > 0)        fundRows.push(["Fwd P/E",     d.fwdPE.toFixed(0),                 d.fwdPE<20?"up":d.fwdPE>40?"warn":""]);
+    if (d.eps)                          fundRows.push(["EPS",         "$"+d.eps.toFixed(2),               d.eps>0?"up":"down"]);
+    if (d.revenueGrowth !== null)       fundRows.push(["Rev Growth",  (d.revenueGrowth*100).toFixed(0)+"%",d.revenueGrowth>0.1?"up":d.revenueGrowth<0?"down":""]);
+    if (d.profitMargin)                 fundRows.push(["Margin",      (d.profitMargin*100).toFixed(0)+"%", d.profitMargin>0.2?"up":d.profitMargin<0.05?"warn":""]);
+    if (d.dividendYield && d.dividendYield>0) fundRows.push(["Dividend", (d.dividendYield*100).toFixed(1)+"%","up"]);
+    if (d.beta)                         fundRows.push(["Beta",        d.beta.toFixed(1),                  d.beta>1.5?"warn":""]);
+    if (d.marketCap)                    fundRows.push(["Mkt Cap",     fmtCap(d.marketCap),                ""]);
+    const fundHTML = fundRows.length > 0
+      ? `<div class="card"><div class="ctitle">Fundamentals</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px">${fundRows.map(([l,v,c])=>`<div class="price-item"><div class="price-label">${l}</div><div class="price-val ${c}">${v}</div></div>`).join("")}</div></div>`
+      : "";
+
+    // Entry & risk
+    const entryText = above200
+      ? `${sym} is in an uptrend. Best entries on pullbacks toward the 50-day MA ($${d.sma50?d.sma50.toFixed(2):"N/A"}). ${d.week52High&&((d.week52High-d.price)/d.week52High*100)>10?"Currently "+(((d.week52High-d.price)/d.week52High)*100).toFixed(0)+"% off its highs — a decent entry window." : "Near highs — consider waiting for a pullback."}`
+      : `${sym} is below its 200-day MA ($${d.sma200?d.sma200.toFixed(2):"N/A"}) — currently in a downtrend. High-risk entry. Wait for price to reclaim the 200-day before buying, or use very small size.`;
+
+    const riskText = `Stop loss: below the ${above200?"50-day MA ($"+(d.sma50?d.sma50.toFixed(2):"N/A")+")":"200-day MA ($"+(d.sma200?d.sma200.toFixed(2):"N/A")+")"}. ${d.analystTarget?"Analyst price target: $"+d.analystTarget.toFixed(0)+" ("+(analystUpside>0?"+":"")+analystUpside.toFixed(0)+"% from here). ":""}Size so your stop risks no more than 1-2% of your total portfolio.`;
+
+    const cacheNote = d._cached ? `&#128190; Cached ${d._cachedAge > 0 ? d._cachedAge+"m ago" : "just now"} &middot; ` : "Live &middot; ";
+
+    r.innerHTML = `
+      <div class="ticker-hdr">
+        <span class="tname">${sym}</span>
+        <span class="badge" style="background:${vColor}18;border:1px solid ${vColor}45;color:${vColor}">${verdict}</span>
+        ${d.name && d.name !== sym ? `<span class="tcompany">${d.name}</span>` : ""}
+      </div>
+
+      <div class="summary-card ${summaryCls}">
+        <div class="summary-title">&#128214; Plain English Summary</div>
+        <div class="summary-text">${summaryText}</div>
+      </div>
+
+      <div class="price-row">
+        <div class="price-item"><div class="price-label">Price</div><div class="price-val">$${d.price.toFixed(2)}</div></div>
+        <div class="price-item"><div class="price-label">Today</div><div class="price-val ${d.changePct>=0?"up":"down"}">${changePctStr}</div></div>
+        ${d.sma50  ? `<div class="price-item"><div class="price-label">50-day MA</div><div class="price-val">${d.price>d.sma50?"↑":"↓"} $${d.sma50.toFixed(2)}</div></div>` : ""}
+        ${d.sma200 ? `<div class="price-item"><div class="price-label">200-day MA</div><div class="price-val ${above200?"up":"down"}">${above200?"↑":"↓"} $${d.sma200.toFixed(2)}</div></div>` : ""}
+        ${d.rsi !== null ? `<div class="price-item"><div class="price-label">RSI (14)</div><div class="price-val ${d.rsi<35?"up":d.rsi>70?"down":""}">${d.rsi.toFixed(1)}</div></div>` : ""}
+        ${d.analystTarget ? `<div class="price-item"><div class="price-label">Analyst Target</div><div class="price-val ${analystUpside>0?"up":"down"}">$${d.analystTarget.toFixed(0)}</div></div>` : ""}
+      </div>
+
+      <div class="signal-bar">${signals.map(s=>`<span class="sig ${s.k}">${s.t}</span>`).join("")}</div>
+
+      ${week52HTML}
+      ${analystHTML}
+      ${fundHTML}
+
+      <div class="card"><div class="ctitle">Entry Timing</div><div class="cbody">${entryText}</div></div>
+      <div class="card"><div class="ctitle">Risk / Reward</div><div class="cbody">${riskText}</div></div>
+
+      <div class="disc">${cacheNote}Yahoo Finance &middot; Not financial advice &middot; Educational only</div>
+    `;
+  } catch(e) {
+    r.innerHTML = `<div class="err-box">&#9888;&#65039; ${e.message}<br><br>Try a different ticker or check your internet connection.</div>`;
+  }
+}
+
+function switchTab(t) {
+  document.getElementById("at").classList.toggle("v",t==="a");
+  document.getElementById("ct").classList.toggle("v",t==="c");
+  document.querySelectorAll(".tab").forEach((el,i)=>el.classList.toggle("on",(i===0&&t==="a")||(i===1&&t==="c")));
+}
 
 // ── Chips ────────────────────────────────────────────────────
 const chipEl = document.getElementById("chips");
@@ -158,375 +499,21 @@ TICKERS.forEach(t => {
 function upd() { document.getElementById("ab").classList.toggle("on", document.getElementById("ti").value.trim().length > 0); }
 
 // ── Checklist ────────────────────────────────────────────────
-const CL=[{id:"trend",l:"Stock is above its 200-day moving average",w:2},{id:"pb",l:"Stock has pulled back 8%+ from recent high",w:2},{id:"vol",l:"Pullback happened on lower-than-normal volume",w:1},{id:"sec",l:"Sector ETF is also in an uptrend",w:1},{id:"mkt",l:"SPY/QQQ is in an uptrend",w:2},{id:"earn",l:"No earnings release in the next 2 weeks",w:1},{id:"sup",l:"Price is near a known support level or moving average",w:2},{id:"cat",l:"You have a clear reason to buy (catalyst/thesis)",w:1}];
-const MS = CL.reduce((s,c)=>s+c.w,0);
-let chks = {};
-const cEl = document.getElementById("clist");
-CL.forEach(i => {
-  const d = document.createElement("div");
-  d.className="ci"; d.id="ci"+i.id;
-  d.innerHTML='<div class="cbox" id="cb'+i.id+'"></div><div style="flex:1"><span class="clabel">'+i.l+'</span><span class="cstars">'+"\u25CF".repeat(i.w)+'</span></div>';
-  d.onclick=()=>tog(i.id); cEl.appendChild(d);
-});
-function tog(id) {
-  chks[id]=!chks[id];
-  document.getElementById("ci"+id).classList.toggle("chk",chks[id]);
-  const cb=document.getElementById("cb"+id);
-  cb.classList.toggle("chk",chks[id]);
-  cb.textContent=chks[id]?"✓":"";
-  upS();
-}
-function upS() {
-  const sc=Object.entries(chks).reduce((s,[id,v])=>{const i=CL.find(c=>c.id===id);return s+(v&&i?i.w:0);},0);
-  const p=Math.round((sc/MS)*100);
-  const r=p>=75?{l:"Strong Entry",c:"#00d4aa"}:p>=50?{l:"Borderline",c:"#f5a623"}:{l:"Not Yet",c:"#ff4d4d"};
-  const b=document.getElementById("sbox");
-  b.style.background=r.c+"0f"; b.style.border="1px solid "+r.c+"35";
-  document.getElementById("slabel").style.color=r.c;
-  document.getElementById("slabel").textContent=r.l;
-  document.getElementById("ssub").textContent=sc+" of "+MS+" pts · "+p+"%";
-  document.getElementById("spct").style.color=r.c;
-  document.getElementById("spct").textContent=p+"%";
-}
-function resetC() {
-  chks={};
-  CL.forEach(i=>{document.getElementById("ci"+i.id).classList.remove("chk");const cb=document.getElementById("cb"+i.id);cb.classList.remove("chk");cb.textContent="";});
-  upS();
-}
-
-// ── API helpers ──────────────────────────────────────────────
-async function avFetch(params) {
-  const qs = Object.entries({...params, apikey: AV_KEY}).map(([k,v])=>k+"="+v).join("&");
-  const r = await fetch("https://www.alphavantage.co/query?" + qs);
-  return r.json();
-}
-
-async function fetchAll(sym) {
-  // Run all fetches in parallel (5 calls total — right at free tier limit per minute)
-  const [quote, sma50d, sma200d, rsiD, overview] = await Promise.all([
-    avFetch({function:"GLOBAL_QUOTE", symbol:sym}),
-    avFetch({function:"SMA", symbol:sym, interval:"daily", time_period:50, series_type:"close"}),
-    avFetch({function:"SMA", symbol:sym, interval:"daily", time_period:200, series_type:"close"}),
-    avFetch({function:"RSI", symbol:sym, interval:"daily", time_period:14, series_type:"close"}),
-    avFetch({function:"OVERVIEW", symbol:sym}),
-  ]);
-
-  const q = quote["Global Quote"];
-  if (!q || !q["05. price"]) throw new Error("No data found for \"" + sym + "\". Check the ticker symbol and try again.");
-
-  const getFirst = (obj, key) => { const v = obj && Object.values(obj)[0]; return v ? parseFloat(v[key]) : null; };
-
-  return {
-    price:      parseFloat(q["05. price"]),
-    open:       parseFloat(q["02. open"]),
-    high:       parseFloat(q["03. high"]),
-    low:        parseFloat(q["04. low"]),
-    prev:       parseFloat(q["08. previous close"]),
-    change:     parseFloat(q["09. change"]),
-    changePct:  parseFloat(q["10. change percent"]),
-    volume:     parseInt(q["06. volume"]),
-    sma50:      getFirst(sma50d["Technical Analysis: SMA"], "SMA"),
-    sma200:     getFirst(sma200d["Technical Analysis: SMA"], "SMA"),
-    rsi:        getFirst(rsiD["Technical Analysis: RSI"], "RSI"),
-    // Overview / fundamentals
-    name:       overview["Name"] || sym,
-    sector:     overview["Sector"] || null,
-    pe:         overview["PERatio"] ? parseFloat(overview["PERatio"]) : null,
-    fwdPE:      overview["ForwardPE"] ? parseFloat(overview["ForwardPE"]) : null,
-    week52High: overview["52WeekHigh"] ? parseFloat(overview["52WeekHigh"]) : null,
-    week52Low:  overview["52WeekLow"]  ? parseFloat(overview["52WeekLow"])  : null,
-    analystTarget:    overview["AnalystTargetPrice"] ? parseFloat(overview["AnalystTargetPrice"]) : null,
-    analystBuy:       overview["AnalystRatingStrongBuy"] ? (parseInt(overview["AnalystRatingStrongBuy"])||0) + (parseInt(overview["AnalystRatingBuy"])||0) : null,
-    analystHold:      overview["AnalystRatingHold"] ? parseInt(overview["AnalystRatingHold"]) : null,
-    analystSell:      overview["AnalystRatingSell"] ? (parseInt(overview["AnalystRatingSell"])||0) + (parseInt(overview["AnalystRatingStrongSell"])||0) : null,
-    profitMargin:     overview["ProfitMargin"] ? parseFloat(overview["ProfitMargin"]) : null,
-    revenueGrowthYoy: overview["QuarterlyRevenueGrowthYOY"] ? parseFloat(overview["QuarterlyRevenueGrowthYOY"]) : null,
-    eps:              overview["EPS"] ? parseFloat(overview["EPS"]) : null,
-    dividendYield:    overview["DividendYield"] ? parseFloat(overview["DividendYield"]) : null,
-    beta:             overview["Beta"] ? parseFloat(overview["Beta"]) : null,
-    marketCap:        overview["MarketCapitalization"] ? parseInt(overview["MarketCapitalization"]) : null,
-  };
-}
-
-// ── Format helpers ───────────────────────────────────────────
-function fmtMktCap(n) {
-  if (!n) return null;
-  if (n >= 1e12) return "$" + (n/1e12).toFixed(1) + "T";
-  if (n >= 1e9)  return "$" + (n/1e9).toFixed(1)  + "B";
-  if (n >= 1e6)  return "$" + (n/1e6).toFixed(1)  + "M";
-  return "$" + n;
-}
-
-// ── Plain English summary ────────────────────────────────────
-function buildSummary(d) {
-  const { sym, price, sma200, sma50, rsi, week52High, week52Low, analystTarget, analystBuy, analystHold, analystSell, pe, revenueGrowthYoy, changePct, name } = d;
-
-  const above200 = sma200 && price > sma200;
-  const pctOff52High = week52High ? ((week52High - price) / week52High * 100) : null;
-  const pctAbove52Low = week52Low ? ((price - week52Low) / week52Low * 100) : null;
-  const analystUpside = analystTarget ? ((analystTarget - price) / price * 100) : null;
-  const totalAnalysts = (analystBuy||0) + (analystHold||0) + (analystSell||0);
-  const buyPct = totalAnalysts > 0 ? Math.round((analystBuy/totalAnalysts)*100) : null;
-
-  const parts = [];
-
-  // Position vs 52w
-  if (pctOff52High !== null) {
-    if (pctOff52High > 30) parts.push(sym + " is down " + pctOff52High.toFixed(0) + "% from its 52-week high — deep in discount territory.");
-    else if (pctOff52High > 15) parts.push(sym + " is trading " + pctOff52High.toFixed(0) + "% off its highs — a notable pullback.");
-    else if (pctOff52High < 5) parts.push(sym + " is near its 52-week high — trading at a premium right now.");
-    else parts.push(sym + " is " + pctOff52High.toFixed(0) + "% off its 52-week high.");
-  }
-
-  // Trend
-  if (above200) parts.push("It's in an uptrend (above its 200-day moving average).");
-  else if (sma200) parts.push("It's currently in a downtrend — trading below its 200-day moving average, which is a yellow flag.");
-
-  // RSI
-  if (rsi !== null) {
-    if (rsi < 30) parts.push("RSI is deeply oversold (" + rsi.toFixed(0) + ") — technically the stock looks cheap and could bounce.");
-    else if (rsi < 40) parts.push("Momentum is weak (RSI " + rsi.toFixed(0) + ") but not at extremes.");
-    else if (rsi > 75) parts.push("RSI is overbought (" + rsi.toFixed(0) + ") — the stock may be extended and due for a pullback.");
-    else if (rsi > 60) parts.push("Momentum is strong (RSI " + rsi.toFixed(0) + ").");
-  }
-
-  // Analyst target
-  if (analystUpside !== null && totalAnalysts >= 5) {
-    if (analystUpside > 25) parts.push("Wall Street analysts have an average price target of $" + analystTarget.toFixed(0) + " — that's " + analystUpside.toFixed(0) + "% upside from here.");
-    else if (analystUpside > 10) parts.push("Analysts see " + analystUpside.toFixed(0) + "% upside to their average target of $" + analystTarget.toFixed(0) + ".");
-    else if (analystUpside < 0) parts.push("Analysts' average target of $" + analystTarget.toFixed(0) + " is actually below the current price — they think it may be overvalued.");
-    else parts.push("Analysts' average target is $" + analystTarget.toFixed(0) + " (" + analystUpside.toFixed(0) + "% upside).");
-  }
-
-  // Buy consensus
-  if (buyPct !== null && totalAnalysts >= 5) {
-    if (buyPct >= 70) parts.push(buyPct + "% of " + totalAnalysts + " analysts say Buy.");
-    else if (buyPct >= 50) parts.push(buyPct + "% of analysts are bullish (" + totalAnalysts + " total).");
-    else parts.push("Only " + buyPct + "% of analysts rate it a Buy — mixed sentiment on Wall Street.");
-  }
-
-  // Revenue growth
-  if (revenueGrowthYoy !== null) {
-    const g = (revenueGrowthYoy * 100).toFixed(0);
-    if (revenueGrowthYoy > 0.2) parts.push("Revenue is growing fast — up " + g + "% year over year.");
-    else if (revenueGrowthYoy > 0.05) parts.push("Revenue growth is solid at +" + g + "% YoY.");
-    else if (revenueGrowthYoy < 0) parts.push("Revenue is actually declining (" + g + "% YoY) — a fundamental concern.");
-  }
-
-  // P/E context
-  if (pe !== null && !isNaN(pe) && pe > 0) {
-    if (pe < 15) parts.push("At a P/E of " + pe.toFixed(0) + ", it looks cheap relative to the market.");
-    else if (pe > 50) parts.push("With a P/E of " + pe.toFixed(0) + ", you're paying a premium — growth expectations are baked in.");
-    else parts.push("P/E ratio is " + pe.toFixed(0) + " — reasonable for its sector.");
-  }
-
-  if (parts.length === 0) parts.push("Loading analysis for " + sym + "...");
-
-  // Determine tone class
-  let cls = "neut";
-  const bullScore = (above200 ? 1 : 0) + (rsi && rsi < 40 ? 1 : 0) + (analystUpside && analystUpside > 15 ? 1 : 0) + (buyPct && buyPct >= 60 ? 1 : 0) + (pctOff52High && pctOff52High > 20 ? 1 : 0);
-  const bearScore = (!above200 && sma200 ? 1 : 0) + (rsi && rsi > 70 ? 1 : 0) + (analystUpside && analystUpside < 0 ? 1 : 0) + (pctOff52High && pctOff52High < 3 ? 1 : 0);
-  if (bullScore >= 3) cls = "bull";
-  else if (bearScore >= 2) cls = "bear";
-
-  return { text: parts.join(" "), cls };
-}
-
-// ── Verdict logic ────────────────────────────────────────────
-function getVerdict(d) {
-  const { price, sma200, sma50, rsi, analystUpside, buyPct, pctOff52High } = d;
-  let bull = 0, bear = 0;
-  if (sma200 && price > sma200) bull++; else if (sma200) bear += 2;
-  if (sma50  && price > sma50)  bull++; else if (sma50)  bear++;
-  if (rsi !== null) {
-    if (rsi < 35) bull += 2;
-    else if (rsi > 72) bear += 2;
-  }
-  if (analystUpside > 20) bull++;
-  if (analystUpside < 0)  bear++;
-  if (buyPct >= 65) bull++;
-  if (buyPct < 40 && buyPct !== null) bear++;
-  if (bull >= 4)   return { v: "BUY",   c: "#00d4aa" };
-  if (bear >= 3)   return { v: "AVOID", c: "#ff4d4d" };
-  return           { v: "WAIT",  c: "#f5a623" };
-}
-
-// ── Signals ──────────────────────────────────────────────────
-function getSignals(d) {
-  const sigs = [];
-  const { price, sma50, sma200, rsi, changePct, analystUpside, buyPct, revenueGrowthYoy, pe } = d;
-  if (sma200) { if (price > sma200) sigs.push({t:"Above 200-day MA",k:"bull"}); else sigs.push({t:"Below 200-day MA",k:"bear"}); }
-  if (sma50)  { if (price > sma50)  sigs.push({t:"Above 50-day MA",k:"bull"}); else sigs.push({t:"Below 50-day MA",k:"bear"}); }
-  if (rsi !== null) {
-    if (rsi < 30) sigs.push({t:"RSI Oversold ("+rsi.toFixed(0)+")",k:"bull"});
-    else if (rsi > 70) sigs.push({t:"RSI Overbought ("+rsi.toFixed(0)+")",k:"bear"});
-    else sigs.push({t:"RSI "+rsi.toFixed(0),k:"neut"});
-  }
-  if (changePct > 2)  sigs.push({t:"Up "+changePct.toFixed(1)+"% today",k:"bull"});
-  if (changePct < -2) sigs.push({t:"Down "+Math.abs(changePct).toFixed(1)+"% today",k:"bear"});
-  if (analystUpside !== null) {
-    if (analystUpside > 15) sigs.push({t:"Analysts: +"+analystUpside.toFixed(0)+"% target",k:"bull"});
-    else if (analystUpside < 0) sigs.push({t:"Analysts: below market",k:"bear"});
-  }
-  if (buyPct !== null) {
-    if (buyPct >= 70) sigs.push({t:buyPct+"% analyst Buy ratings",k:"bull"});
-    else if (buyPct < 40) sigs.push({t:"Mixed analyst ratings",k:"bear"});
-  }
-  if (revenueGrowthYoy > 0.15) sigs.push({t:"Revenue +"+(revenueGrowthYoy*100).toFixed(0)+"% YoY",k:"bull"});
-  if (revenueGrowthYoy < 0)    sigs.push({t:"Revenue declining",k:"bear"});
-  return sigs;
-}
-
-// ── Main ─────────────────────────────────────────────────────
-async function go() {
-  const sym = document.getElementById("ti").value.trim().toUpperCase();
-  if (!sym) return;
-  document.getElementById("empty").style.display = "none";
-  const r = document.getElementById("result");
-  r.className = "v";
-  const cached = cacheGet(sym);
-  r.innerHTML = cached
-    ? '<div class="loading-box">Loading ' + sym + ' from cache…<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>'
-    : '<div class="loading-box">Fetching live data for ' + sym + '…<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
-
-  try {
-    const raw = await fetchAll(sym);
-    const d = { sym, ...raw };
-
-    // Derived
-    d.pctOff52High = d.week52High ? ((d.week52High - d.price) / d.week52High * 100) : null;
-    d.pctAbove52Low = d.week52Low ? ((d.price - d.week52Low) / d.week52Low * 100) : null;
-    d.analystUpside = d.analystTarget ? ((d.analystTarget - d.price) / d.price * 100) : null;
-    const total = (d.analystBuy||0) + (d.analystHold||0) + (d.analystSell||0);
-    d.buyPct = total > 0 ? Math.round((d.analystBuy/total)*100) : null;
-    d.totalAnalysts = total;
-
-    const { v: verdict, c: vColor } = getVerdict(d);
-    const signals = getSignals(d);
-    const { text: summaryText, cls: summaryCls } = buildSummary(d);
-    const changePctStr = (d.changePct >= 0 ? "+" : "") + d.changePct.toFixed(2) + "%";
-    const changeClass = d.changePct >= 0 ? "up" : "down";
-
-    // 52w bar HTML
-    let week52HTML = "";
-    if (d.week52High && d.week52Low) {
-      const range = d.week52High - d.week52Low;
-      const pos = range > 0 ? ((d.price - d.week52Low) / range * 100) : 50;
-      week52HTML = `
-        <div class="week52-wrap">
-          <div class="abar-label">52-Week Range</div>
-          <div class="week52-track">
-            <div class="week52-fill" style="width:100%"></div>
-            <div class="week52-dot" style="left:${Math.min(98,Math.max(2,pos))}%"></div>
-          </div>
-          <div class="week52-labels">
-            <span>Low $${d.week52Low.toFixed(0)}</span>
-            <span>Current $${d.price.toFixed(2)}</span>
-            <span>High $${d.week52High.toFixed(0)}</span>
-          </div>
-        </div>`;
-    }
-
-    // Analyst bar HTML
-    let analystHTML = "";
-    if (d.totalAnalysts >= 3) {
-      const bw = Math.round((d.analystBuy/d.totalAnalysts)*100);
-      const hw = Math.round((d.analystHold/d.totalAnalysts)*100);
-      const sw = 100 - bw - hw;
-      analystHTML = `
-        <div>
-          <div class="abar-label">Analyst Ratings &mdash; ${d.totalAnalysts} analysts${d.analystTarget ? " &middot; Avg target $"+d.analystTarget.toFixed(0) : ""}</div>
-          <div class="analyst-bar">
-            ${bw > 0 ? `<div class="abar-buy" style="width:${bw}%">${bw}% Buy</div>` : ""}
-            ${hw > 0 ? `<div class="abar-hold" style="width:${hw}%">${hw > 15 ? hw+"% Hold" : ""}</div>` : ""}
-            ${sw > 0 ? `<div class="abar-sell" style="width:${sw}%">${sw > 15 ? sw+"% Sell" : ""}</div>` : ""}
-          </div>
-        </div>`;
-    }
-
-    // Fundamentals card
-    const fundRows = [];
-    if (d.pe && !isNaN(d.pe) && d.pe > 0)      fundRows.push(["P/E Ratio", d.pe.toFixed(0), d.pe < 20 ? "up" : d.pe > 45 ? "warn" : ""]);
-    if (d.fwdPE && !isNaN(d.fwdPE) && d.fwdPE > 0) fundRows.push(["Fwd P/E", d.fwdPE.toFixed(0), d.fwdPE < 20 ? "up" : d.fwdPE > 40 ? "warn" : ""]);
-    if (d.eps)           fundRows.push(["EPS", "$"+d.eps.toFixed(2), d.eps > 0 ? "up" : "down"]);
-    if (d.revenueGrowthYoy !== null) fundRows.push(["Rev Growth YoY", (d.revenueGrowthYoy*100).toFixed(0)+"%", d.revenueGrowthYoy > 0.1 ? "up" : d.revenueGrowthYoy < 0 ? "down" : ""]);
-    if (d.profitMargin)  fundRows.push(["Profit Margin", (d.profitMargin*100).toFixed(0)+"%", d.profitMargin > 0.2 ? "up" : d.profitMargin < 0.05 ? "warn" : ""]);
-    if (d.dividendYield && d.dividendYield > 0) fundRows.push(["Dividend Yield", (d.dividendYield*100).toFixed(1)+"%", "up"]);
-    if (d.beta)          fundRows.push(["Beta", d.beta.toFixed(1), d.beta > 1.5 ? "warn" : ""]);
-    if (d.marketCap)     fundRows.push(["Market Cap", fmtMktCap(d.marketCap), ""]);
-
-    const fundHTML = fundRows.length > 0 ? `
-      <div class="card">
-        <div class="ctitle">Fundamentals</div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px">
-          ${fundRows.map(([l,v,cls]) => `<div class="price-item"><div class="price-label">${l}</div><div class="price-val ${cls}">${v}</div></div>`).join("")}
-        </div>
-      </div>` : "";
-
-    // Entry & risk text
-    const above200 = d.sma200 && d.price > d.sma200;
-    const entryText = above200
-      ? `${sym} is in an uptrend. Look for entries on pullbacks toward the 50-day MA ($${d.sma50 ? d.sma50.toFixed(2) : "N/A"}) or after a 5-10% dip from recent highs. ${d.pctOff52High > 10 ? "Currently " + d.pctOff52High.toFixed(0) + "% off its highs — a decent entry window." : "Near highs — consider waiting for a pullback."}`
-      : `${sym} is below its 200-day MA ($${d.sma200 ? d.sma200.toFixed(2) : "N/A"}), meaning it's in a downtrend. High-risk entry. Wait for the price to reclaim the 200-day before buying, or use very small size.`;
-
-    const riskText = `Stop loss: below the ${above200 ? "50-day MA ($"+(d.sma50?d.sma50.toFixed(2):"N/A")+")" : "200-day MA ($"+(d.sma200?d.sma200.toFixed(2):"N/A")+")"}.${d.analystTarget ? " Analyst price target: $"+d.analystTarget.toFixed(0)+" ("+d.analystUpside.toFixed(0)+"% from here)." : ""} Size your position so the stop loss risks no more than 1-2% of your total portfolio.`;
-
-    r.innerHTML = `
-      <div class="ticker-hdr">
-        <span class="tname">${sym}</span>
-        <span class="badge" style="background:${vColor}18;border:1px solid ${vColor}45;color:${vColor}">${verdict}</span>
-        ${d.sector ? `<span style="font-size:11px;color:#4a3f2f">${d.sector}</span>` : ""}
-      </div>
-
-      <div class="summary-card ${summaryCls}">
-        <div class="summary-title">&#128214; Plain English Summary</div>
-        <div class="summary-text">${summaryText}</div>
-      </div>
-
-      <div class="price-row">
-        <div class="price-item"><div class="price-label">Price</div><div class="price-val">$${d.price.toFixed(2)}</div></div>
-        <div class="price-item"><div class="price-label">Today</div><div class="price-val ${changeClass}">${changePctStr}</div></div>
-        ${d.sma50  ? `<div class="price-item"><div class="price-label">50-day MA</div><div class="price-val">${d.price > d.sma50 ? "↑" : "↓"} $${d.sma50.toFixed(2)}</div></div>` : ""}
-        ${d.sma200 ? `<div class="price-item"><div class="price-label">200-day MA</div><div class="price-val ${above200 ? "up" : "down"}">${above200 ? "↑" : "↓"} $${d.sma200.toFixed(2)}</div></div>` : ""}
-        ${d.rsi !== null ? `<div class="price-item"><div class="price-label">RSI (14)</div><div class="price-val ${d.rsi < 35 ? "up" : d.rsi > 70 ? "down" : ""}">${d.rsi.toFixed(1)}</div></div>` : ""}
-        ${d.analystTarget ? `<div class="price-item"><div class="price-label">Analyst Target</div><div class="price-val ${d.analystUpside > 0 ? "up" : "down"}">$${d.analystTarget.toFixed(0)}</div></div>` : ""}
-      </div>
-
-      <div class="signal-bar">${signals.map(s=>`<span class="sig ${s.k}">${s.t}</span>`).join("")}</div>
-
-      ${week52HTML}
-      ${analystHTML}
-
-      ${fundHTML}
-
-      <div class="card"><div class="ctitle">Entry Timing</div><div class="cbody">${entryText}</div></div>
-      <div class="card"><div class="ctitle">Risk / Reward</div><div class="cbody">${riskText}</div></div>
-
-      <div class="disc">${raw._cached ? '&#128190; Cached ' + (raw._cachedAge || '') + ' &middot; ' : 'Live data &middot; '}Alpha Vantage &middot; Not financial advice</div>
-    `;
-  } catch(e) {
-    r.innerHTML = `<div class="err-box">⚠️ ${e.message}<br><br>The free Alpha Vantage tier allows 25 requests per day and 5 per minute. Wait 60 seconds and try again.</div>`;
-  }
-}
-
-function switchTab(t) {
-  document.getElementById("at").classList.toggle("v", t==="a");
-  document.getElementById("ct").classList.toggle("v", t==="c");
-  document.querySelectorAll(".tab").forEach((el,i)=>el.classList.toggle("on",(i===0&&t==="a")||(i===1&&t==="c")));
-}
+const CL=[{id:"trend",l:"Stock is above its 200-day moving average",w:2},{id:"pb",l:"Stock has pulled back 8%+ from recent high",w:2},{id:"vol",l:"Pullback happened on lower-than-normal volume",w:1},{id:"sec",l:"Sector ETF is also in an uptrend",w:1},{id:"mkt",l:"SPY/QQQ is in an uptrend",w:2},{id:"earn",l:"No earnings release in the next 2 weeks",w:1},{id:"sup",l:"Price is near a known support level or MA",w:2},{id:"cat",l:"You have a clear reason to buy",w:1}];
+const MS=CL.reduce((s,c)=>s+c.w,0); let chks={};
+const cEl=document.getElementById("clist");
+CL.forEach(i=>{const d=document.createElement("div");d.className="ci";d.id="ci"+i.id;d.innerHTML='<div class="cbox" id="cb'+i.id+'"></div><div style="flex:1"><span class="clabel">'+i.l+'</span><span class="cstars">'+"\u25CF".repeat(i.w)+'</span></div>';d.onclick=()=>tog(i.id);cEl.appendChild(d);});
+function tog(id){chks[id]=!chks[id];document.getElementById("ci"+id).classList.toggle("chk",chks[id]);const cb=document.getElementById("cb"+id);cb.classList.toggle("chk",chks[id]);cb.textContent=chks[id]?"✓":"";upS();}
+function upS(){const sc=Object.entries(chks).reduce((s,[id,v])=>{const i=CL.find(c=>c.id===id);return s+(v&&i?i.w:0);},0);const p=Math.round((sc/MS)*100);const r=p>=75?{l:"Strong Entry",c:"#00d4aa"}:p>=50?{l:"Borderline",c:"#f5a623"}:{l:"Not Yet",c:"#ff4d4d"};const b=document.getElementById("sbox");b.style.background=r.c+"0f";b.style.border="1px solid "+r.c+"35";document.getElementById("slabel").style.color=r.c;document.getElementById("slabel").textContent=r.l;document.getElementById("ssub").textContent=sc+" of "+MS+" pts · "+p+"%";document.getElementById("spct").style.color=r.c;document.getElementById("spct").textContent=p+"%";}
+function resetC(){chks={};CL.forEach(i=>{document.getElementById("ci"+i.id).classList.remove("chk");const cb=document.getElementById("cb"+i.id);cb.classList.remove("chk");cb.textContent="";});upS();}
 
 // ── PWA ──────────────────────────────────────────────────────
-let dP = null;
-window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); dP=e; setTimeout(()=>{ if(!localStorage.getItem("idismissed")) document.getElementById("ibanner").classList.add("show"); },3000); });
-function installApp() { if(dP){ dP.prompt(); dP.userChoice.then(()=>{ dP=null; document.getElementById("ibanner").classList.remove("show"); }); } }
-function dismissI() { document.getElementById("ibanner").classList.remove("show"); localStorage.setItem("idismissed","1"); }
-if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !window.navigator.standalone) {
-  setTimeout(()=>{ if(!localStorage.getItem("iostipShown")){ document.getElementById("iostip").classList.add("show"); localStorage.setItem("iostipShown","1"); } },3000);
-}
-if ("serviceWorker" in navigator) {
-  const sw=`const C="et-v3";self.addEventListener("install",e=>e.waitUntil(caches.open(C).then(c=>c.addAll(["./"]))));self.addEventListener("fetch",e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>caches.match("./")))));`;
-  navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:"application/javascript"}))).catch(()=>{});
-}
+let dP=null;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();dP=e;setTimeout(()=>{if(!localStorage.getItem("idismissed"))document.getElementById("ibanner").classList.add("show");},3000);});
+function installApp(){if(dP){dP.prompt();dP.userChoice.then(()=>{dP=null;document.getElementById("ibanner").classList.remove("show");});}}
+function dismissI(){document.getElementById("ibanner").classList.remove("show");localStorage.setItem("idismissed","1");}
+if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.navigator.standalone){setTimeout(()=>{if(!localStorage.getItem("iostipShown")){document.getElementById("iostip").classList.add("show");localStorage.setItem("iostipShown","1");}},3000);}
+if("serviceWorker"in navigator){const sw=`const C="et-v4";self.addEventListener("install",e=>e.waitUntil(caches.open(C).then(c=>c.addAll(["./"]))));self.addEventListener("fetch",e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>caches.match("./")))));`;navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:"application/javascript"}))).catch(()=>{});}
 upS();
 </script>
 </body>
