@@ -64,6 +64,7 @@ input::placeholder { color: #4a3f2f; }
 .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
 @keyframes blink{0%,100%{opacity:.15}50%{opacity:1}}
 .err-box { background: rgba(255,77,77,0.05); border: 1px solid rgba(255,77,77,0.2); padding: 12px 14px; border-radius: 3px; color: #ff6b6b; font-size: 13px; margin-bottom: 10px; line-height: 1.6; }
+.limit-box { background: rgba(245,166,35,0.05); border: 1px solid rgba(245,166,35,0.2); padding: 12px 14px; border-radius: 3px; color: #f5a623; font-size: 13px; margin-bottom: 10px; line-height: 1.6; }
 .empty { color: #4a3f2f; font-size: 13px; text-align: center; margin-top: 40px; line-height: 1.8; }
 .week52-wrap { margin-bottom: 12px; }
 .week52-track { height: 6px; background: rgba(232,213,163,0.1); border-radius: 3px; position: relative; margin: 8px 0 4px; }
@@ -137,150 +138,131 @@ input::placeholder { color: #4a3f2f; }
 </div>
 
 <script>
+const AV_KEY = "78L3SVHLY4BTE2Q4";
 const TICKERS = ["SPY","QQQ","AAPL","NVDA","MSFT","VTI","AMZN","TSLA","BRK.B","GOOGL","META","JPM"];
 const CACHE_TTL = 15 * 60 * 1000;
 
 // ── Cache ────────────────────────────────────────────────────
 function cacheGet(sym) {
   try {
-    const raw = localStorage.getItem("et2_" + sym);
+    const raw = localStorage.getItem("et3_" + sym);
     if (!raw) return null;
     const { data, ts } = JSON.parse(raw);
-    if (Date.now() - ts > CACHE_TTL) { localStorage.removeItem("et2_" + sym); return null; }
+    if (Date.now() - ts > CACHE_TTL) { localStorage.removeItem("et3_" + sym); return null; }
     data._cached = true;
     data._cachedAge = Math.floor((Date.now() - ts) / 60000);
     return data;
   } catch(e) { return null; }
 }
 function cacheSet(sym, data) {
-  try { localStorage.setItem("et2_" + sym, JSON.stringify({ data, ts: Date.now() })); } catch(e) {}
+  try { localStorage.setItem("et3_" + sym, JSON.stringify({ data, ts: Date.now() })); } catch(e) {}
 }
 
-// ── Yahoo Finance via cors proxy ─────────────────────────────
-async function proxyFetch(url) {
-  // Try multiple proxies in order
-  const proxies = [
-    "https://corsproxy.io/?" + encodeURIComponent(url),
-    "https://api.allorigins.win/get?url=" + encodeURIComponent(url),
-    "https://thingproxy.freeboard.io/fetch/" + url,
-  ];
-  for (const proxy of proxies) {
-    try {
-      const r = await fetch(proxy, { signal: AbortSignal.timeout(8000) });
-      if (!r.ok) continue;
-      const text = await r.text();
-      // allorigins wraps in {contents: "..."}
-      if (text.startsWith('{') && text.includes('"contents"')) {
-        const j = JSON.parse(text);
-        return JSON.parse(j.contents);
-      }
-      return JSON.parse(text);
-    } catch(e) { continue; }
-  }
-  throw new Error("Could not connect to data source. Check your internet connection and try again.");
-}
-
-async function fetchYahoo(sym) {
-  const url = "https://query1.finance.yahoo.com/v8/finance/chart/" + sym + "?interval=1d&range=1y";
-  const parsed = await proxyFetch(url);
-  const result = parsed?.chart?.result?.[0];
-  if (!result) throw new Error("No data found for \"" + sym + "\". Check the ticker symbol.");
-  return result;
-}
-
-async function fetchYahooQuote(sym) {
-  const url = "https://query1.finance.yahoo.com/v10/finance/quoteSummary/" + sym + "?modules=price,summaryDetail,defaultKeyStatistics,financialData,recommendationTrend";
+// ── Track daily usage ────────────────────────────────────────
+function getUsage() {
   try {
-    const parsed = await proxyFetch(url);
-    return parsed?.quoteSummary?.result?.[0];
-  } catch(e) { return null; }
+    const raw = localStorage.getItem("et3_usage");
+    if (!raw) return { date: today(), count: 0 };
+    const u = JSON.parse(raw);
+    if (u.date !== today()) return { date: today(), count: 0 };
+    return u;
+  } catch(e) { return { date: today(), count: 0 }; }
+}
+function addUsage(n) {
+  const u = getUsage();
+  u.count += n;
+  localStorage.setItem("et3_usage", JSON.stringify(u));
+}
+function today() { return new Date().toISOString().slice(0,10); }
+function callsLeft() { return Math.max(0, 25 - getUsage().count); }
+
+// ── Alpha Vantage: 2 calls per ticker (OVERVIEW + TIME_SERIES) ──
+async function avFetch(params) {
+  const qs = Object.entries({...params, apikey: AV_KEY}).map(([k,v])=>k+"="+v).join("&");
+  const r = await fetch("https://www.alphavantage.co/query?" + qs);
+  const d = await r.json();
+  if (d.Note || d.Information) throw new Error("rate_limit");
+  return d;
 }
 
-// ── Compute SMA from closes array ────────────────────────────
-function computeSMA(closes, period) {
-  if (!closes || closes.length < period) return null;
-  const slice = closes.slice(-period);
-  return slice.reduce((a, b) => a + b, 0) / period;
+// Compute SMA from price array
+function computeSMA(prices, period) {
+  if (!prices || prices.length < period) return null;
+  return prices.slice(-period).reduce((a,b) => a+b, 0) / period;
 }
 
-// ── Compute RSI ──────────────────────────────────────────────
-function computeRSI(closes, period = 14) {
-  if (!closes || closes.length < period + 1) return null;
-  const recent = closes.slice(-(period + 1));
-  let gains = 0, losses = 0;
-  for (let i = 1; i < recent.length; i++) {
-    const diff = recent[i] - recent[i-1];
-    if (diff > 0) gains += diff; else losses -= diff;
+// Compute RSI
+function computeRSI(prices, period=14) {
+  if (!prices || prices.length < period+1) return null;
+  const recent = prices.slice(-(period+1));
+  let gains=0, losses=0;
+  for (let i=1; i<recent.length; i++) {
+    const d = recent[i] - recent[i-1];
+    if (d > 0) gains += d; else losses -= d;
   }
-  const avgGain = gains / period;
-  const avgLoss = losses / period;
-  if (avgLoss === 0) return 100;
-  const rs = avgGain / avgLoss;
-  return 100 - (100 / (1 + rs));
+  const rs = (gains/period) / (losses/period || 0.001);
+  return 100 - (100/(1+rs));
 }
 
-// ── Main fetch ───────────────────────────────────────────────
 async function fetchAll(sym) {
+  // Check cache first — no API calls needed
   const cached = cacheGet(sym);
   if (cached) return cached;
 
-  const [chartData, quoteData] = await Promise.all([
-    fetchYahoo(sym),
-    fetchYahooQuote(sym).catch(() => null)
-  ]);
+  // Check we have enough calls left (need 2)
+  if (callsLeft() < 2) throw new Error("daily_limit");
 
-  const meta = chartData.meta;
-  const closes = chartData.indicators?.quote?.[0]?.close?.filter(v => v !== null) || [];
-  const volumes = chartData.indicators?.quote?.[0]?.volume?.filter(v => v !== null) || [];
+  // Call 1: OVERVIEW — gives fundamentals, analyst data, 52w range
+  const overview = await avFetch({ function: "OVERVIEW", symbol: sym });
+  addUsage(1);
 
-  const price = meta.regularMarketPrice || closes[closes.length - 1];
-  const prev = meta.previousClose || meta.chartPreviousClose;
-  const changePct = prev ? ((price - prev) / prev * 100) : 0;
-  const sma50 = computeSMA(closes, 50);
-  const sma200 = computeSMA(closes, 200);
-  const rsi = computeRSI(closes, 14);
+  if (!overview.Symbol) throw new Error("No data found for \"" + sym + "\". Check the ticker symbol.");
 
-  // From quoteSummary
-  const priceData   = quoteData?.price || {};
-  const summary     = quoteData?.summaryDetail || {};
-  const keyStats    = quoteData?.defaultKeyStatistics || {};
-  const finData     = quoteData?.financialData || {};
-  const recTrend    = quoteData?.recommendationTrend?.trend?.[0] || {};
+  // Call 2: Daily prices — we compute SMA and RSI ourselves from this
+  const daily = await avFetch({ function: "TIME_SERIES_DAILY", symbol: sym, outputsize: "compact" });
+  addUsage(1);
 
-  const analystBuy  = (recTrend.strongBuy || 0) + (recTrend.buy || 0);
-  const analystHold = recTrend.hold || 0;
-  const analystSell = (recTrend.sell || 0) + (recTrend.strongSell || 0);
-  const totalAnalysts = analystBuy + analystHold + analystSell;
+  const series = daily["Time Series (Daily)"];
+  if (!series) throw new Error("Could not load price data for " + sym);
+
+  const dates = Object.keys(series).sort();
+  const closes = dates.map(d => parseFloat(series[d]["4. close"]));
+  const latest = series[dates[dates.length-1]];
+  const prev = series[dates[dates.length-2]];
+
+  const price = parseFloat(latest["4. close"]);
+  const prevClose = parseFloat(prev["4. close"]);
+  const changePct = ((price - prevClose) / prevClose) * 100;
 
   const result = {
     sym,
-    name:           priceData.shortName || priceData.longName || sym,
-    sector:         priceData.sector?.longFmt || null,
+    name:          overview.Name || sym,
+    sector:        overview.Sector || null,
     price,
-    prev,
+    prevClose,
     changePct,
-    high:           meta.regularMarketDayHigh || price,
-    low:            meta.regularMarketDayLow  || price,
-    volume:         meta.regularMarketVolume  || 0,
-    sma50,
-    sma200,
-    rsi,
-    week52High:     summary.fiftyTwoWeekHigh?.raw  || meta.fiftyTwoWeekHigh  || null,
-    week52Low:      summary.fiftyTwoWeekLow?.raw   || meta.fiftyTwoWeekLow   || null,
-    pe:             summary.trailingPE?.raw         || null,
-    fwdPE:          summary.forwardPE?.raw          || null,
-    eps:            keyStats.trailingEps?.raw        || null,
-    beta:           summary.beta?.raw               || null,
-    marketCap:      priceData.marketCap?.raw        || null,
-    dividendYield:  summary.dividendYield?.raw      || null,
-    profitMargin:   finData.profitMargins?.raw      || null,
-    revenueGrowth:  finData.revenueGrowth?.raw      || null,
-    analystTarget:  finData.targetMeanPrice?.raw    || null,
-    analystBuy,
-    analystHold,
-    analystSell,
-    totalAnalysts,
+    high:          parseFloat(latest["2. high"]),
+    low:           parseFloat(latest["3. low"]),
+    sma50:         computeSMA(closes, 50),
+    sma200:        computeSMA(closes, 200),
+    rsi:           computeRSI(closes, 14),
+    week52High:    overview["52WeekHigh"]       ? parseFloat(overview["52WeekHigh"])       : null,
+    week52Low:     overview["52WeekLow"]        ? parseFloat(overview["52WeekLow"])        : null,
+    pe:            overview["PERatio"]          ? parseFloat(overview["PERatio"])          : null,
+    fwdPE:         overview["ForwardPE"]        ? parseFloat(overview["ForwardPE"])        : null,
+    eps:           overview["EPS"]              ? parseFloat(overview["EPS"])              : null,
+    beta:          overview["Beta"]             ? parseFloat(overview["Beta"])             : null,
+    marketCap:     overview["MarketCapitalization"] ? parseInt(overview["MarketCapitalization"]) : null,
+    dividendYield: overview["DividendYield"]    ? parseFloat(overview["DividendYield"])    : null,
+    profitMargin:  overview["ProfitMargin"]     ? parseFloat(overview["ProfitMargin"])     : null,
+    revenueGrowth: overview["QuarterlyRevenueGrowthYOY"] ? parseFloat(overview["QuarterlyRevenueGrowthYOY"]) : null,
+    analystTarget: overview["AnalystTargetPrice"] ? parseFloat(overview["AnalystTargetPrice"]) : null,
+    analystBuy:    (parseInt(overview["AnalystRatingStrongBuy"])||0) + (parseInt(overview["AnalystRatingBuy"])||0),
+    analystHold:   parseInt(overview["AnalystRatingHold"]) || 0,
+    analystSell:   (parseInt(overview["AnalystRatingSell"])||0) + (parseInt(overview["AnalystRatingStrongSell"])||0),
+    callsUsedToday: getUsage().count,
   };
+  result.totalAnalysts = result.analystBuy + result.analystHold + result.analystSell;
 
   cacheSet(sym, result);
   return result;
@@ -289,68 +271,66 @@ async function fetchAll(sym) {
 // ── Format helpers ───────────────────────────────────────────
 function fmtCap(n) {
   if (!n) return null;
-  if (n >= 1e12) return "$" + (n/1e12).toFixed(1) + "T";
-  if (n >= 1e9)  return "$" + (n/1e9).toFixed(1)  + "B";
-  return "$" + (n/1e6).toFixed(0) + "M";
+  if (n >= 1e12) return "$"+(n/1e12).toFixed(1)+"T";
+  if (n >= 1e9)  return "$"+(n/1e9).toFixed(1)+"B";
+  return "$"+(n/1e6).toFixed(0)+"M";
 }
 
 // ── Plain English summary ────────────────────────────────────
 function buildSummary(d) {
-  const { sym, price, sma200, sma50, rsi, week52High, week52Low, analystTarget, analystBuy, totalAnalysts, pe, revenueGrowth, changePct } = d;
-  const above200 = sma200 && price > sma200;
-  const pctOff52High = week52High ? ((week52High - price) / week52High * 100) : null;
-  const analystUpside = analystTarget ? ((analystTarget - price) / price * 100) : null;
-  const buyPct = totalAnalysts > 0 ? Math.round((analystBuy / totalAnalysts) * 100) : null;
+  const above200 = d.sma200 && d.price > d.sma200;
+  const pctOff52High = d.week52High ? ((d.week52High - d.price) / d.week52High * 100) : null;
+  const analystUpside = d.analystTarget ? ((d.analystTarget - d.price) / d.price * 100) : null;
+  const buyPct = d.totalAnalysts > 0 ? Math.round((d.analystBuy/d.totalAnalysts)*100) : null;
   const parts = [];
 
   if (pctOff52High !== null) {
-    if (pctOff52High > 30) parts.push(sym + " is down " + pctOff52High.toFixed(0) + "% from its 52-week high — deep discount territory.");
-    else if (pctOff52High > 15) parts.push(sym + " is " + pctOff52High.toFixed(0) + "% off its highs — a notable pullback.");
-    else if (pctOff52High < 5) parts.push(sym + " is near its 52-week high — trading at a premium.");
-    else parts.push(sym + " is " + pctOff52High.toFixed(0) + "% off its 52-week high.");
+    if (pctOff52High > 30) parts.push(d.sym+" is down "+pctOff52High.toFixed(0)+"% from its 52-week high — deep discount territory.");
+    else if (pctOff52High > 15) parts.push(d.sym+" is "+pctOff52High.toFixed(0)+"% off its highs — a notable pullback.");
+    else if (pctOff52High < 5) parts.push(d.sym+" is near its 52-week high — trading at a premium right now.");
+    else parts.push(d.sym+" is "+pctOff52High.toFixed(0)+"% off its 52-week high.");
   }
 
   if (above200) parts.push("It's in an uptrend (above its 200-day moving average).");
-  else if (sma200) parts.push("It's in a downtrend — below its 200-day moving average. Yellow flag.");
+  else if (d.sma200) parts.push("It's in a downtrend — below its 200-day moving average. Yellow flag.");
 
-  if (rsi !== null) {
-    if (rsi < 30) parts.push("RSI is deeply oversold (" + rsi.toFixed(0) + ") — could be a buying opportunity.");
-    else if (rsi < 40) parts.push("Momentum is weak (RSI " + rsi.toFixed(0) + ") but not extreme.");
-    else if (rsi > 75) parts.push("RSI is overbought (" + rsi.toFixed(0) + ") — may be due for a pullback.");
-    else if (rsi > 60) parts.push("Momentum is strong (RSI " + rsi.toFixed(0) + ").");
+  if (d.rsi !== null) {
+    if (d.rsi < 30) parts.push("RSI is deeply oversold ("+d.rsi.toFixed(0)+") — could be a buying opportunity.");
+    else if (d.rsi < 40) parts.push("Momentum is weak (RSI "+d.rsi.toFixed(0)+") but not at extremes.");
+    else if (d.rsi > 75) parts.push("RSI is overbought ("+d.rsi.toFixed(0)+") — may be due for a pullback.");
+    else if (d.rsi > 60) parts.push("Momentum is strong (RSI "+d.rsi.toFixed(0)+").");
   }
 
-  if (analystUpside !== null && totalAnalysts >= 3) {
-    if (analystUpside > 25) parts.push("Wall Street analysts have an average target of $" + analystTarget.toFixed(0) + " — " + analystUpside.toFixed(0) + "% upside from here.");
-    else if (analystUpside > 10) parts.push("Analysts see " + analystUpside.toFixed(0) + "% upside to their avg target of $" + analystTarget.toFixed(0) + ".");
-    else if (analystUpside < 0) parts.push("Analysts' avg target of $" + analystTarget.toFixed(0) + " is below the current price — they think it may be overvalued.");
-    else parts.push("Analysts' avg target is $" + analystTarget.toFixed(0) + " (" + analystUpside.toFixed(0) + "% upside).");
+  if (analystUpside !== null && d.totalAnalysts >= 3) {
+    if (analystUpside > 25) parts.push("Wall Street has an avg target of $"+d.analystTarget.toFixed(0)+" — "+analystUpside.toFixed(0)+"% upside from here.");
+    else if (analystUpside > 10) parts.push("Analysts see "+analystUpside.toFixed(0)+"% upside to their avg target of $"+d.analystTarget.toFixed(0)+".");
+    else if (analystUpside < 0) parts.push("Analysts' avg target of $"+d.analystTarget.toFixed(0)+" is below the current price — may be overvalued.");
+    else parts.push("Analysts' avg target is $"+d.analystTarget.toFixed(0)+" ("+analystUpside.toFixed(0)+"% upside).");
   }
 
-  if (buyPct !== null && totalAnalysts >= 3) {
-    if (buyPct >= 70) parts.push(buyPct + "% of " + totalAnalysts + " analysts say Buy.");
-    else if (buyPct >= 50) parts.push(buyPct + "% of " + totalAnalysts + " analysts are bullish.");
-    else parts.push("Only " + buyPct + "% of analysts rate it a Buy — mixed sentiment.");
+  if (buyPct !== null && d.totalAnalysts >= 3) {
+    if (buyPct >= 70) parts.push(buyPct+"% of "+d.totalAnalysts+" analysts say Buy.");
+    else if (buyPct >= 50) parts.push(buyPct+"% of "+d.totalAnalysts+" analysts are bullish.");
+    else parts.push("Only "+buyPct+"% of analysts rate it a Buy — mixed Wall Street sentiment.");
   }
 
-  if (revenueGrowth !== null) {
-    const g = (revenueGrowth * 100).toFixed(0);
-    if (revenueGrowth > 0.2) parts.push("Revenue growing fast — +" + g + "% YoY.");
-    else if (revenueGrowth > 0.05) parts.push("Revenue growth solid at +" + g + "% YoY.");
-    else if (revenueGrowth < 0) parts.push("Revenue declining (" + g + "% YoY) — a concern.");
+  if (d.revenueGrowth !== null) {
+    const g = (d.revenueGrowth*100).toFixed(0);
+    if (d.revenueGrowth > 0.2) parts.push("Revenue growing fast — +"+g+"% YoY.");
+    else if (d.revenueGrowth > 0.05) parts.push("Revenue growth solid at +"+g+"% YoY.");
+    else if (d.revenueGrowth < 0) parts.push("Revenue declining ("+g+"% YoY) — a concern.");
   }
 
-  if (pe !== null && !isNaN(pe) && pe > 0) {
-    if (pe < 15) parts.push("P/E of " + pe.toFixed(0) + " looks cheap relative to the market.");
-    else if (pe > 50) parts.push("P/E of " + pe.toFixed(0) + " — growth expectations are baked in, paying a premium.");
+  if (d.pe && d.pe > 0) {
+    if (d.pe < 15) parts.push("P/E of "+d.pe.toFixed(0)+" looks cheap relative to the market.");
+    else if (d.pe > 50) parts.push("P/E of "+d.pe.toFixed(0)+" — paying a premium, high growth expectations baked in.");
   }
 
-  if (parts.length === 0) parts.push("Analysis loaded for " + sym + ". Check the data points below.");
+  if (parts.length === 0) parts.push("Analysis loaded for "+d.sym+". Review the data points below.");
 
-  let bullScore = (above200?1:0) + (rsi&&rsi<40?1:0) + (analystUpside&&analystUpside>15?1:0) + (buyPct&&buyPct>=60?1:0) + (pctOff52High&&pctOff52High>20?1:0);
-  let bearScore = (!above200&&sma200?1:0) + (rsi&&rsi>70?1:0) + (analystUpside&&analystUpside<0?1:0) + (pctOff52High&&pctOff52High<3?1:0);
+  const bullScore = (above200?1:0)+(d.rsi&&d.rsi<40?1:0)+(analystUpside&&analystUpside>15?1:0)+(buyPct&&buyPct>=60?1:0)+(pctOff52High&&pctOff52High>20?1:0);
+  const bearScore = (!above200&&d.sma200?1:0)+(d.rsi&&d.rsi>70?1:0)+(analystUpside&&analystUpside<0?1:0)+(pctOff52High&&pctOff52High<3?1:0);
   const cls = bullScore >= 3 ? "bull" : bearScore >= 2 ? "bear" : "neut";
-
   return { text: parts.join(" "), cls };
 }
 
@@ -360,45 +340,44 @@ function getVerdict(d) {
   const above50  = d.sma50  && d.price > d.sma50;
   const buyPct   = d.totalAnalysts > 0 ? Math.round((d.analystBuy/d.totalAnalysts)*100) : null;
   const analystUpside = d.analystTarget ? ((d.analystTarget - d.price) / d.price * 100) : null;
-  let bull = 0, bear = 0;
-  if (above200) bull++; else if (d.sma200) bear += 2;
+  let bull=0, bear=0;
+  if (above200) bull++; else if (d.sma200) bear+=2;
   if (above50)  bull++; else if (d.sma50)  bear++;
-  if (d.rsi !== null) { if (d.rsi < 35) bull += 2; else if (d.rsi > 72) bear += 2; }
-  if (analystUpside > 20) bull++;
-  if (analystUpside < 0)  bear++;
-  if (buyPct >= 65) bull++;
-  if (buyPct < 40 && buyPct !== null) bear++;
-  if (bull >= 4)  return { v:"BUY",   c:"#00d4aa" };
-  if (bear >= 3)  return { v:"AVOID", c:"#ff4d4d" };
-  return              { v:"WAIT",  c:"#f5a623" };
+  if (d.rsi!==null) { if(d.rsi<35) bull+=2; else if(d.rsi>72) bear+=2; }
+  if (analystUpside>20) bull++;
+  if (analystUpside<0)  bear++;
+  if (buyPct>=65) bull++;
+  if (buyPct!==null&&buyPct<40) bear++;
+  if (bull>=4) return {v:"BUY",  c:"#00d4aa"};
+  if (bear>=3) return {v:"AVOID",c:"#ff4d4d"};
+  return          {v:"WAIT", c:"#f5a623"};
 }
 
 // ── Signals ──────────────────────────────────────────────────
 function getSignals(d) {
-  const sigs = [];
-  const above200 = d.sma200 && d.price > d.sma200;
-  const above50  = d.sma50  && d.price > d.sma50;
-  const analystUpside = d.analystTarget ? ((d.analystTarget - d.price) / d.price * 100) : null;
-  const buyPct = d.totalAnalysts > 0 ? Math.round((d.analystBuy/d.totalAnalysts)*100) : null;
-  if (d.sma200) sigs.push(above200 ? {t:"Above 200-day MA",k:"bull"} : {t:"Below 200-day MA",k:"bear"});
-  if (d.sma50)  sigs.push(above50  ? {t:"Above 50-day MA",k:"bull"}  : {t:"Below 50-day MA",k:"bear"});
-  if (d.rsi !== null) {
-    if (d.rsi < 30) sigs.push({t:"RSI Oversold ("+d.rsi.toFixed(0)+")",k:"bull"});
-    else if (d.rsi > 70) sigs.push({t:"RSI Overbought ("+d.rsi.toFixed(0)+")",k:"bear"});
+  const sigs=[];
+  const above200=d.sma200&&d.price>d.sma200, above50=d.sma50&&d.price>d.sma50;
+  const analystUpside=d.analystTarget?((d.analystTarget-d.price)/d.price*100):null;
+  const buyPct=d.totalAnalysts>0?Math.round((d.analystBuy/d.totalAnalysts)*100):null;
+  if(d.sma200) sigs.push(above200?{t:"Above 200-day MA",k:"bull"}:{t:"Below 200-day MA",k:"bear"});
+  if(d.sma50)  sigs.push(above50?{t:"Above 50-day MA",k:"bull"}:{t:"Below 50-day MA",k:"bear"});
+  if(d.rsi!==null){
+    if(d.rsi<30) sigs.push({t:"RSI Oversold ("+d.rsi.toFixed(0)+")",k:"bull"});
+    else if(d.rsi>70) sigs.push({t:"RSI Overbought ("+d.rsi.toFixed(0)+")",k:"bear"});
     else sigs.push({t:"RSI "+d.rsi.toFixed(0),k:"neut"});
   }
-  if (d.changePct > 2)  sigs.push({t:"Up "+d.changePct.toFixed(1)+"% today",k:"bull"});
-  if (d.changePct < -2) sigs.push({t:"Down "+Math.abs(d.changePct).toFixed(1)+"% today",k:"bear"});
-  if (analystUpside !== null && d.totalAnalysts >= 3) {
-    if (analystUpside > 15) sigs.push({t:"Analysts: +"+analystUpside.toFixed(0)+"% target",k:"bull"});
-    else if (analystUpside < 0) sigs.push({t:"Analysts: overvalued",k:"bear"});
+  if(d.changePct>2)  sigs.push({t:"Up "+d.changePct.toFixed(1)+"% today",k:"bull"});
+  if(d.changePct<-2) sigs.push({t:"Down "+Math.abs(d.changePct).toFixed(1)+"% today",k:"bear"});
+  if(analystUpside!==null&&d.totalAnalysts>=3){
+    if(analystUpside>15) sigs.push({t:"Analysts: +"+analystUpside.toFixed(0)+"% target",k:"bull"});
+    else if(analystUpside<0) sigs.push({t:"Analysts: overvalued",k:"bear"});
   }
-  if (buyPct !== null && d.totalAnalysts >= 3) {
-    if (buyPct >= 70) sigs.push({t:buyPct+"% analyst Buys",k:"bull"});
-    else if (buyPct < 40) sigs.push({t:"Mixed analyst ratings",k:"neut"});
+  if(buyPct!==null&&d.totalAnalysts>=3){
+    if(buyPct>=70) sigs.push({t:buyPct+"% analyst Buys",k:"bull"});
+    else if(buyPct<40) sigs.push({t:"Mixed analyst ratings",k:"neut"});
   }
-  if (d.revenueGrowth > 0.2)  sigs.push({t:"Revenue +"+(d.revenueGrowth*100).toFixed(0)+"%",k:"bull"});
-  if (d.revenueGrowth < 0)    sigs.push({t:"Revenue declining",k:"bear"});
+  if(d.revenueGrowth>0.15) sigs.push({t:"Revenue +"+(d.revenueGrowth*100).toFixed(0)+"%",k:"bull"});
+  if(d.revenueGrowth<0)    sigs.push({t:"Revenue declining",k:"bear"});
   return sigs;
 }
 
@@ -410,129 +389,114 @@ async function go() {
   const r = document.getElementById("result");
   r.className = "v";
   const isCached = !!cacheGet(sym);
-  r.innerHTML = '<div class="loading-box">' + (isCached ? "Loading " + sym + " from cache" : "Fetching live data for " + sym) + '…<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
+  r.innerHTML = '<div class="loading-box">'+(isCached?"Loading "+sym+" from cache":"Fetching live data for "+sym)+'…<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
 
   try {
     const d = await fetchAll(sym);
     const above200 = d.sma200 && d.price > d.sma200;
-    const analystUpside = d.analystTarget ? ((d.analystTarget - d.price) / d.price * 100) : null;
-    const buyPct = d.totalAnalysts > 0 ? Math.round((d.analystBuy/d.totalAnalysts)*100) : null;
-    d.analystUpside = analystUpside;
-    d.buyPct = buyPct;
+    const analystUpside = d.analystTarget ? ((d.analystTarget-d.price)/d.price*100) : null;
+    const buyPct = d.totalAnalysts>0 ? Math.round((d.analystBuy/d.totalAnalysts)*100) : null;
 
-    const { v: verdict, c: vColor } = getVerdict(d);
+    const {v:verdict, c:vColor} = getVerdict(d);
     const signals = getSignals(d);
-    const { text: summaryText, cls: summaryCls } = buildSummary(d);
-    const changePctStr = (d.changePct >= 0 ? "+" : "") + d.changePct.toFixed(2) + "%";
+    const {text:summaryText, cls:summaryCls} = buildSummary(d);
+    const changePctStr = (d.changePct>=0?"+":"")+d.changePct.toFixed(2)+"%";
 
     // 52w bar
-    let week52HTML = "";
-    if (d.week52High && d.week52Low) {
-      const pos = Math.min(98, Math.max(2, ((d.price - d.week52Low) / (d.week52High - d.week52Low)) * 100));
-      week52HTML = `<div class="week52-wrap"><div class="abar-label">52-Week Range</div><div class="week52-track"><div class="week52-fill" style="width:100%"></div><div class="week52-dot" style="left:${pos.toFixed(0)}%"></div></div><div class="week52-labels"><span>Low $${d.week52Low.toFixed(0)}</span><span>Now $${d.price.toFixed(2)}</span><span>High $${d.week52High.toFixed(0)}</span></div></div>`;
+    let week52HTML="";
+    if(d.week52High&&d.week52Low){
+      const pos=Math.min(98,Math.max(2,((d.price-d.week52Low)/(d.week52High-d.week52Low))*100));
+      week52HTML=`<div class="week52-wrap"><div class="abar-label">52-Week Range</div><div class="week52-track"><div class="week52-fill" style="width:100%"></div><div class="week52-dot" style="left:${pos.toFixed(0)}%"></div></div><div class="week52-labels"><span>Low $${d.week52Low.toFixed(0)}</span><span>Now $${d.price.toFixed(2)}</span><span>High $${d.week52High.toFixed(0)}</span></div></div>`;
     }
 
     // Analyst bar
-    let analystHTML = "";
-    if (d.totalAnalysts >= 3) {
-      const bw = Math.round((d.analystBuy/d.totalAnalysts)*100);
-      const hw = Math.round((d.analystHold/d.totalAnalysts)*100);
-      const sw = 100 - bw - hw;
-      analystHTML = `<div><div class="abar-label">Analyst Ratings — ${d.totalAnalysts} analysts${d.analystTarget ? " · Avg target $"+d.analystTarget.toFixed(0) : ""}</div><div class="analyst-bar">${bw>0?`<div class="abar-buy" style="width:${bw}%">${bw>15?bw+"% Buy":""}</div>`:""}${hw>0?`<div class="abar-hold" style="width:${hw}%">${hw>15?hw+"% Hold":""}</div>`:""}${sw>0?`<div class="abar-sell" style="width:${sw}%">${sw>15?sw+"% Sell":""}</div>`:""}</div></div>`;
+    let analystHTML="";
+    if(d.totalAnalysts>=3){
+      const bw=Math.round((d.analystBuy/d.totalAnalysts)*100);
+      const hw=Math.round((d.analystHold/d.totalAnalysts)*100);
+      const sw=100-bw-hw;
+      analystHTML=`<div><div class="abar-label">Analyst Ratings — ${d.totalAnalysts} analysts${d.analystTarget?" · Avg target $"+d.analystTarget.toFixed(0):""}</div><div class="analyst-bar">${bw>0?`<div class="abar-buy" style="width:${bw}%">${bw>15?bw+"% Buy":""}</div>`:""}${hw>0?`<div class="abar-hold" style="width:${hw}%">${hw>15?hw+"% Hold":""}</div>`:""}${sw>0?`<div class="abar-sell" style="width:${sw}%">${sw>15?sw+"% Sell":""}</div>`:""}</div></div>`;
     }
 
     // Fundamentals
-    const fundRows = [];
-    if (d.pe && d.pe > 0)              fundRows.push(["P/E",         d.pe.toFixed(0),                    d.pe<20?"up":d.pe>45?"warn":""]);
-    if (d.fwdPE && d.fwdPE > 0)        fundRows.push(["Fwd P/E",     d.fwdPE.toFixed(0),                 d.fwdPE<20?"up":d.fwdPE>40?"warn":""]);
-    if (d.eps)                          fundRows.push(["EPS",         "$"+d.eps.toFixed(2),               d.eps>0?"up":"down"]);
-    if (d.revenueGrowth !== null)       fundRows.push(["Rev Growth",  (d.revenueGrowth*100).toFixed(0)+"%",d.revenueGrowth>0.1?"up":d.revenueGrowth<0?"down":""]);
-    if (d.profitMargin)                 fundRows.push(["Margin",      (d.profitMargin*100).toFixed(0)+"%", d.profitMargin>0.2?"up":d.profitMargin<0.05?"warn":""]);
-    if (d.dividendYield && d.dividendYield>0) fundRows.push(["Dividend", (d.dividendYield*100).toFixed(1)+"%","up"]);
-    if (d.beta)                         fundRows.push(["Beta",        d.beta.toFixed(1),                  d.beta>1.5?"warn":""]);
-    if (d.marketCap)                    fundRows.push(["Mkt Cap",     fmtCap(d.marketCap),                ""]);
-    const fundHTML = fundRows.length > 0
-      ? `<div class="card"><div class="ctitle">Fundamentals</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px">${fundRows.map(([l,v,c])=>`<div class="price-item"><div class="price-label">${l}</div><div class="price-val ${c}">${v}</div></div>`).join("")}</div></div>`
-      : "";
+    const fundRows=[];
+    if(d.pe&&d.pe>0)             fundRows.push(["P/E",d.pe.toFixed(0),d.pe<20?"up":d.pe>45?"warn":""]);
+    if(d.fwdPE&&d.fwdPE>0)       fundRows.push(["Fwd P/E",d.fwdPE.toFixed(0),d.fwdPE<20?"up":d.fwdPE>40?"warn":""]);
+    if(d.eps)                     fundRows.push(["EPS","$"+d.eps.toFixed(2),d.eps>0?"up":"down"]);
+    if(d.revenueGrowth!==null)    fundRows.push(["Rev Growth",(d.revenueGrowth*100).toFixed(0)+"%",d.revenueGrowth>0.1?"up":d.revenueGrowth<0?"down":""]);
+    if(d.profitMargin)            fundRows.push(["Margin",(d.profitMargin*100).toFixed(0)+"%",d.profitMargin>0.2?"up":d.profitMargin<0.05?"warn":""]);
+    if(d.dividendYield&&d.dividendYield>0) fundRows.push(["Dividend",(d.dividendYield*100).toFixed(1)+"%","up"]);
+    if(d.beta)                    fundRows.push(["Beta",d.beta.toFixed(1),d.beta>1.5?"warn":""]);
+    if(d.marketCap)               fundRows.push(["Mkt Cap",fmtCap(d.marketCap),""]);
+    const fundHTML=fundRows.length>0?`<div class="card"><div class="ctitle">Fundamentals</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px">${fundRows.map(([l,v,c])=>`<div class="price-item"><div class="price-label">${l}</div><div class="price-val ${c}">${v}</div></div>`).join("")}</div></div>`:"";
 
-    // Entry & risk
     const entryText = above200
-      ? `${sym} is in an uptrend. Best entries on pullbacks toward the 50-day MA ($${d.sma50?d.sma50.toFixed(2):"N/A"}). ${d.week52High&&((d.week52High-d.price)/d.week52High*100)>10?"Currently "+(((d.week52High-d.price)/d.week52High)*100).toFixed(0)+"% off its highs — a decent entry window." : "Near highs — consider waiting for a pullback."}`
-      : `${sym} is below its 200-day MA ($${d.sma200?d.sma200.toFixed(2):"N/A"}) — currently in a downtrend. High-risk entry. Wait for price to reclaim the 200-day before buying, or use very small size.`;
+      ? `${sym} is in an uptrend. Best entries on pullbacks toward the 50-day MA ($${d.sma50?d.sma50.toFixed(2):"N/A"}). ${d.week52High&&((d.week52High-d.price)/d.week52High*100)>10?"Currently "+(((d.week52High-d.price)/d.week52High)*100).toFixed(0)+"% off its highs — a decent entry window.":"Near highs — consider waiting for a pullback."}`
+      : `${sym} is below its 200-day MA ($${d.sma200?d.sma200.toFixed(2):"N/A"}) — in a downtrend. High-risk entry. Wait for price to reclaim the 200-day, or use very small size.`;
 
-    const riskText = `Stop loss: below the ${above200?"50-day MA ($"+(d.sma50?d.sma50.toFixed(2):"N/A")+")":"200-day MA ($"+(d.sma200?d.sma200.toFixed(2):"N/A")+")"}. ${d.analystTarget?"Analyst price target: $"+d.analystTarget.toFixed(0)+" ("+(analystUpside>0?"+":"")+analystUpside.toFixed(0)+"% from here). ":""}Size so your stop risks no more than 1-2% of your total portfolio.`;
+    const riskText=`Stop loss: below the ${above200?"50-day MA ($"+(d.sma50?d.sma50.toFixed(2):"N/A")+")":"200-day MA ($"+(d.sma200?d.sma200.toFixed(2):"N/A")+")"}.${d.analystTarget?" Analyst target: $"+d.analystTarget.toFixed(0)+" ("+(analystUpside>0?"+":"")+analystUpside.toFixed(0)+"% from here).":""} Size so your stop risks no more than 1-2% of your portfolio.`;
 
-    const cacheNote = d._cached ? `&#128190; Cached ${d._cachedAge > 0 ? d._cachedAge+"m ago" : "just now"} &middot; ` : "Live &middot; ";
+    const left = callsLeft();
+    const cacheNote = d._cached ? `&#128190; Cached ${d._cachedAge>0?d._cachedAge+"m ago":"just now"} &middot; ` : `Live &middot; ${left} API calls left today &middot; `;
 
-    r.innerHTML = `
+    r.innerHTML=`
       <div class="ticker-hdr">
         <span class="tname">${sym}</span>
         <span class="badge" style="background:${vColor}18;border:1px solid ${vColor}45;color:${vColor}">${verdict}</span>
-        ${d.name && d.name !== sym ? `<span class="tcompany">${d.name}</span>` : ""}
+        ${d.name&&d.name!==sym?`<span class="tcompany">${d.name}</span>`:""}
       </div>
-
       <div class="summary-card ${summaryCls}">
         <div class="summary-title">&#128214; Plain English Summary</div>
         <div class="summary-text">${summaryText}</div>
       </div>
-
       <div class="price-row">
         <div class="price-item"><div class="price-label">Price</div><div class="price-val">$${d.price.toFixed(2)}</div></div>
         <div class="price-item"><div class="price-label">Today</div><div class="price-val ${d.changePct>=0?"up":"down"}">${changePctStr}</div></div>
-        ${d.sma50  ? `<div class="price-item"><div class="price-label">50-day MA</div><div class="price-val">${d.price>d.sma50?"↑":"↓"} $${d.sma50.toFixed(2)}</div></div>` : ""}
-        ${d.sma200 ? `<div class="price-item"><div class="price-label">200-day MA</div><div class="price-val ${above200?"up":"down"}">${above200?"↑":"↓"} $${d.sma200.toFixed(2)}</div></div>` : ""}
-        ${d.rsi !== null ? `<div class="price-item"><div class="price-label">RSI (14)</div><div class="price-val ${d.rsi<35?"up":d.rsi>70?"down":""}">${d.rsi.toFixed(1)}</div></div>` : ""}
-        ${d.analystTarget ? `<div class="price-item"><div class="price-label">Analyst Target</div><div class="price-val ${analystUpside>0?"up":"down"}">$${d.analystTarget.toFixed(0)}</div></div>` : ""}
+        ${d.sma50?`<div class="price-item"><div class="price-label">50-day MA</div><div class="price-val">${d.price>d.sma50?"↑":"↓"} $${d.sma50.toFixed(2)}</div></div>`:""}
+        ${d.sma200?`<div class="price-item"><div class="price-label">200-day MA</div><div class="price-val ${above200?"up":"down"}">${above200?"↑":"↓"} $${d.sma200.toFixed(2)}</div></div>`:""}
+        ${d.rsi!==null?`<div class="price-item"><div class="price-label">RSI (14)</div><div class="price-val ${d.rsi<35?"up":d.rsi>70?"down":""}">${d.rsi.toFixed(1)}</div></div>`:""}
+        ${d.analystTarget?`<div class="price-item"><div class="price-label">Analyst Target</div><div class="price-val ${analystUpside>0?"up":"down"}">$${d.analystTarget.toFixed(0)}</div></div>`:""}
       </div>
-
       <div class="signal-bar">${signals.map(s=>`<span class="sig ${s.k}">${s.t}</span>`).join("")}</div>
-
       ${week52HTML}
       ${analystHTML}
       ${fundHTML}
-
       <div class="card"><div class="ctitle">Entry Timing</div><div class="cbody">${entryText}</div></div>
       <div class="card"><div class="ctitle">Risk / Reward</div><div class="cbody">${riskText}</div></div>
-
-      <div class="disc">${cacheNote}Yahoo Finance &middot; Not financial advice &middot; Educational only</div>
+      <div class="disc">${cacheNote}Alpha Vantage &middot; Not financial advice</div>
     `;
   } catch(e) {
-    r.innerHTML = `<div class="err-box">&#9888;&#65039; ${e.message}<br><br>Try a different ticker or check your internet connection.</div>`;
+    const r2 = document.getElementById("result");
+    if (e.message === "rate_limit") {
+      r2.innerHTML=`<div class="limit-box">&#9203; Rate limited — Alpha Vantage allows 5 requests per minute. Wait 60 seconds and try again.<br><br>Tip: searches are cached for 15 minutes so repeat lookups are instant.</div>`;
+    } else if (e.message === "daily_limit") {
+      r2.innerHTML=`<div class="limit-box">&#128197; Daily limit reached (25 API calls). Resets at midnight.<br><br>Cached tickers still load instantly — try one you've already searched today.</div>`;
+    } else {
+      r2.innerHTML=`<div class="err-box">&#9888;&#65039; ${e.message}</div>`;
+    }
   }
 }
 
-function switchTab(t) {
-  document.getElementById("at").classList.toggle("v",t==="a");
-  document.getElementById("ct").classList.toggle("v",t==="c");
-  document.querySelectorAll(".tab").forEach((el,i)=>el.classList.toggle("on",(i===0&&t==="a")||(i===1&&t==="c")));
-}
+function switchTab(t){document.getElementById("at").classList.toggle("v",t==="a");document.getElementById("ct").classList.toggle("v",t==="c");document.querySelectorAll(".tab").forEach((el,i)=>el.classList.toggle("on",(i===0&&t==="a")||(i===1&&t==="c")));}
 
-// ── Chips ────────────────────────────────────────────────────
-const chipEl = document.getElementById("chips");
-TICKERS.forEach(t => {
-  const b = document.createElement("button");
-  b.className = "chip"; b.textContent = t;
-  b.onclick = () => { document.getElementById("ti").value = t; go(); };
-  chipEl.appendChild(b);
-});
-function upd() { document.getElementById("ab").classList.toggle("on", document.getElementById("ti").value.trim().length > 0); }
+const chipEl=document.getElementById("chips");
+TICKERS.forEach(t=>{const b=document.createElement("button");b.className="chip";b.textContent=t;b.onclick=()=>{document.getElementById("ti").value=t;go();};chipEl.appendChild(b);});
+function upd(){document.getElementById("ab").classList.toggle("on",document.getElementById("ti").value.trim().length>0);}
 
-// ── Checklist ────────────────────────────────────────────────
 const CL=[{id:"trend",l:"Stock is above its 200-day moving average",w:2},{id:"pb",l:"Stock has pulled back 8%+ from recent high",w:2},{id:"vol",l:"Pullback happened on lower-than-normal volume",w:1},{id:"sec",l:"Sector ETF is also in an uptrend",w:1},{id:"mkt",l:"SPY/QQQ is in an uptrend",w:2},{id:"earn",l:"No earnings release in the next 2 weeks",w:1},{id:"sup",l:"Price is near a known support level or MA",w:2},{id:"cat",l:"You have a clear reason to buy",w:1}];
-const MS=CL.reduce((s,c)=>s+c.w,0); let chks={};
+const MS=CL.reduce((s,c)=>s+c.w,0);let chks={};
 const cEl=document.getElementById("clist");
 CL.forEach(i=>{const d=document.createElement("div");d.className="ci";d.id="ci"+i.id;d.innerHTML='<div class="cbox" id="cb'+i.id+'"></div><div style="flex:1"><span class="clabel">'+i.l+'</span><span class="cstars">'+"\u25CF".repeat(i.w)+'</span></div>';d.onclick=()=>tog(i.id);cEl.appendChild(d);});
 function tog(id){chks[id]=!chks[id];document.getElementById("ci"+id).classList.toggle("chk",chks[id]);const cb=document.getElementById("cb"+id);cb.classList.toggle("chk",chks[id]);cb.textContent=chks[id]?"✓":"";upS();}
 function upS(){const sc=Object.entries(chks).reduce((s,[id,v])=>{const i=CL.find(c=>c.id===id);return s+(v&&i?i.w:0);},0);const p=Math.round((sc/MS)*100);const r=p>=75?{l:"Strong Entry",c:"#00d4aa"}:p>=50?{l:"Borderline",c:"#f5a623"}:{l:"Not Yet",c:"#ff4d4d"};const b=document.getElementById("sbox");b.style.background=r.c+"0f";b.style.border="1px solid "+r.c+"35";document.getElementById("slabel").style.color=r.c;document.getElementById("slabel").textContent=r.l;document.getElementById("ssub").textContent=sc+" of "+MS+" pts · "+p+"%";document.getElementById("spct").style.color=r.c;document.getElementById("spct").textContent=p+"%";}
 function resetC(){chks={};CL.forEach(i=>{document.getElementById("ci"+i.id).classList.remove("chk");const cb=document.getElementById("cb"+i.id);cb.classList.remove("chk");cb.textContent="";});upS();}
 
-// ── PWA ──────────────────────────────────────────────────────
 let dP=null;
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();dP=e;setTimeout(()=>{if(!localStorage.getItem("idismissed"))document.getElementById("ibanner").classList.add("show");},3000);});
 function installApp(){if(dP){dP.prompt();dP.userChoice.then(()=>{dP=null;document.getElementById("ibanner").classList.remove("show");});}}
 function dismissI(){document.getElementById("ibanner").classList.remove("show");localStorage.setItem("idismissed","1");}
 if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.navigator.standalone){setTimeout(()=>{if(!localStorage.getItem("iostipShown")){document.getElementById("iostip").classList.add("show");localStorage.setItem("iostipShown","1");}},3000);}
-if("serviceWorker"in navigator){const sw=`const C="et-v4";self.addEventListener("install",e=>e.waitUntil(caches.open(C).then(c=>c.addAll(["./"]))));self.addEventListener("fetch",e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>caches.match("./")))));`;navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:"application/javascript"}))).catch(()=>{});}
+if("serviceWorker"in navigator){const sw=`const C="et-v5";self.addEventListener("install",e=>e.waitUntil(caches.open(C).then(c=>c.addAll(["./"]))));self.addEventListener("fetch",e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>caches.match("./")))));`;navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:"application/javascript"}))).catch(()=>{});}
 upS();
 </script>
 </body>
