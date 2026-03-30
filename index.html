@@ -156,25 +156,44 @@ function cacheSet(sym, data) {
   try { localStorage.setItem("et2_" + sym, JSON.stringify({ data, ts: Date.now() })); } catch(e) {}
 }
 
-// ── Yahoo Finance via allorigins proxy ───────────────────────
+// ── Yahoo Finance via cors proxy ─────────────────────────────
+async function proxyFetch(url) {
+  // Try multiple proxies in order
+  const proxies = [
+    "https://corsproxy.io/?" + encodeURIComponent(url),
+    "https://api.allorigins.win/get?url=" + encodeURIComponent(url),
+    "https://thingproxy.freeboard.io/fetch/" + url,
+  ];
+  for (const proxy of proxies) {
+    try {
+      const r = await fetch(proxy, { signal: AbortSignal.timeout(8000) });
+      if (!r.ok) continue;
+      const text = await r.text();
+      // allorigins wraps in {contents: "..."}
+      if (text.startsWith('{') && text.includes('"contents"')) {
+        const j = JSON.parse(text);
+        return JSON.parse(j.contents);
+      }
+      return JSON.parse(text);
+    } catch(e) { continue; }
+  }
+  throw new Error("Could not connect to data source. Check your internet connection and try again.");
+}
+
 async function fetchYahoo(sym) {
   const url = "https://query1.finance.yahoo.com/v8/finance/chart/" + sym + "?interval=1d&range=1y";
-  const proxy = "https://api.allorigins.win/get?url=" + encodeURIComponent(url);
-  const r = await fetch(proxy);
-  const j = await r.json();
-  const parsed = JSON.parse(j.contents);
+  const parsed = await proxyFetch(url);
   const result = parsed?.chart?.result?.[0];
-  if (!result) throw new Error("No data found for \"" + sym + "\". Check the ticker and try again.");
+  if (!result) throw new Error("No data found for \"" + sym + "\". Check the ticker symbol.");
   return result;
 }
 
 async function fetchYahooQuote(sym) {
   const url = "https://query1.finance.yahoo.com/v10/finance/quoteSummary/" + sym + "?modules=price,summaryDetail,defaultKeyStatistics,financialData,recommendationTrend";
-  const proxy = "https://api.allorigins.win/get?url=" + encodeURIComponent(url);
-  const r = await fetch(proxy);
-  const j = await r.json();
-  const parsed = JSON.parse(j.contents);
-  return parsed?.quoteSummary?.result?.[0];
+  try {
+    const parsed = await proxyFetch(url);
+    return parsed?.quoteSummary?.result?.[0];
+  } catch(e) { return null; }
 }
 
 // ── Compute SMA from closes array ────────────────────────────
