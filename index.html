@@ -25,36 +25,57 @@ input::placeholder { color: #4a3f2f; }
 .abtn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: rgba(232,213,163,0.1); color: #4a3f2f; border: none; padding: 6px 13px; border-radius: 2px; font-weight: 600; font-size: 13px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
 .abtn.on { background: #e8d5a3; color: #0e0c09; }
 .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; }
-.chip { background: rgba(232,213,163,0.05); border: 1px solid rgba(232,213,163,0.1); color: #7a6a50; padding: 3px 9px; border-radius: 2px; font-family: monospace; font-size: 12px; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: all 0.15s; }
+.chip { background: rgba(232,213,163,0.05); border: 1px solid rgba(232,213,163,0.1); color: #7a6a50; padding: 3px 9px; border-radius: 2px; font-family: monospace; font-size: 12px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .chip:active { background: rgba(232,213,163,0.15); color: #e8d5a3; }
-.ticker-hdr { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+/* Summary card */
+.summary-card { padding: 16px; border-radius: 4px; margin-bottom: 12px; border-left: 3px solid; }
+.summary-card.bull { background: rgba(0,212,170,0.07); border-color: #00d4aa; }
+.summary-card.bear { background: rgba(255,77,77,0.07); border-color: #ff4d4d; }
+.summary-card.neut { background: rgba(245,166,35,0.07); border-color: #f5a623; }
+.summary-title { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; opacity: 0.7; }
+.summary-text { font-size: 14px; line-height: 1.7; color: #e8d5a3; }
+/* Ticker header */
+.ticker-hdr { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
 .tname { font-family: monospace; font-size: 18px; color: #e8d5a3; font-weight: 700; }
 .badge { padding: 3px 10px; border-radius: 2px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; }
-.price-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
-.price-item { background: rgba(232,213,163,0.04); border: 1px solid rgba(232,213,163,0.1); padding: 8px 12px; border-radius: 3px; flex: 1; min-width: 80px; }
+/* Price row */
+.price-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 6px; margin-bottom: 12px; }
+.price-item { background: rgba(232,213,163,0.04); border: 1px solid rgba(232,213,163,0.1); padding: 8px 10px; border-radius: 3px; }
 .price-label { color: #4a3f2f; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px; }
-.price-val { color: #e8d5a3; font-family: monospace; font-size: 14px; font-weight: 600; }
+.price-val { color: #e8d5a3; font-family: monospace; font-size: 13px; font-weight: 600; }
 .price-val.up { color: #00d4aa; }
 .price-val.down { color: #ff4d4d; }
-.card { background: rgba(232,213,163,0.03); border: 1px solid rgba(232,213,163,0.08); padding: 14px; border-radius: 3px; margin-bottom: 10px; }
+.price-val.warn { color: #f5a623; }
+/* Analyst bar */
+.analyst-bar { display: flex; gap: 0; margin-bottom: 12px; border-radius: 3px; overflow: hidden; height: 28px; }
+.abar-buy { background: rgba(0,212,170,0.7); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #0e0c09; }
+.abar-hold { background: rgba(245,166,35,0.6); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #0e0c09; }
+.abar-sell { background: rgba(255,77,77,0.6); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #0e0c09; }
+.abar-label { font-size: 10px; color: #4a3f2f; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 5px; }
+/* Signal chips */
+.signal-bar { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
+.sig { padding: 3px 9px; border-radius: 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; }
+.sig.bull { background: rgba(0,212,170,0.12); border: 1px solid rgba(0,212,170,0.3); color: #00d4aa; }
+.sig.bear { background: rgba(255,77,77,0.12); border: 1px solid rgba(255,77,77,0.3); color: #ff4d4d; }
+.sig.neut { background: rgba(232,213,163,0.08); border: 1px solid rgba(232,213,163,0.15); color: #c8b896; }
+/* Cards */
+.card { background: rgba(232,213,163,0.03); border: 1px solid rgba(232,213,163,0.08); padding: 14px; border-radius: 3px; margin-bottom: 8px; }
 .ctitle { color: #e8d5a3; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 7px; border-bottom: 1px solid rgba(232,213,163,0.1); padding-bottom: 5px; }
 .cbody { color: #a89880; font-size: 13px; line-height: 1.7; }
-.insight { background: rgba(232,213,163,0.06); border: 1px solid rgba(232,213,163,0.15); padding: 10px 14px; border-radius: 3px; margin-bottom: 10px; font-size: 13px; color: #c8b896; }
-.insight b { color: #e8d5a3; }
-.disc { color: #3a3020; font-size: 11px; text-align: center; margin-top: 6px; }
+.disc { color: #3a3020; font-size: 11px; text-align: center; margin-top: 8px; }
 .loading-box { text-align: center; padding: 40px 20px; color: #4a3f2f; font-size: 13px; }
 .loading-dots { display: inline-flex; gap: 5px; margin-top: 10px; }
 .dot { width: 7px; height: 7px; border-radius: 50%; background: #e8d5a3; animation: blink 1.2s infinite; }
-.dot:nth-child(2) { animation-delay: 0.2s; }
-.dot:nth-child(3) { animation-delay: 0.4s; }
-@keyframes blink { 0%,100%{opacity:.15}50%{opacity:1} }
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,100%{opacity:.15}50%{opacity:1}}
 .err-box { background: rgba(255,77,77,0.05); border: 1px solid rgba(255,77,77,0.2); padding: 12px 14px; border-radius: 3px; color: #ff6b6b; font-size: 13px; margin-bottom: 10px; line-height: 1.6; }
 .empty { color: #4a3f2f; font-size: 13px; text-align: center; margin-top: 40px; line-height: 1.8; }
-.signal-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
-.sig { padding: 4px 10px; border-radius: 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; }
-.sig.bull { background: rgba(0,212,170,0.12); border: 1px solid rgba(0,212,170,0.3); color: #00d4aa; }
-.sig.bear { background: rgba(255,77,77,0.12); border: 1px solid rgba(255,77,77,0.3); color: #ff4d4d; }
-.sig.neut { background: rgba(232,213,163,0.08); border: 1px solid rgba(232,213,163,0.2); color: #c8b896; }
+/* 52w bar */
+.week52-wrap { margin-bottom: 12px; }
+.week52-track { height: 6px; background: rgba(232,213,163,0.1); border-radius: 3px; position: relative; margin: 8px 0 4px; }
+.week52-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #ff4d4d, #f5a623, #00d4aa); }
+.week52-dot { width: 10px; height: 10px; background: #e8d5a3; border-radius: 50%; position: absolute; top: -2px; transform: translateX(-50%); }
+.week52-labels { display: flex; justify-content: space-between; font-size: 10px; color: #4a3f2f; font-family: monospace; }
 /* Checklist */
 .ci { display: flex; align-items: flex-start; gap: 12px; padding: 11px 14px; margin-bottom: 6px; background: rgba(232,213,163,0.02); border: 1px solid rgba(232,213,163,0.08); border-radius: 3px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; transition: all 0.15s; }
 .ci.chk { background: rgba(0,212,170,0.06); border-color: rgba(0,212,170,0.25); }
@@ -69,21 +90,19 @@ input::placeholder { color: #4a3f2f; }
 .spct { font-size: 28px; font-weight: 700; margin-left: auto; }
 .rbtn { background: none; border: 1px solid rgba(232,213,163,0.1); color: #4a3f2f; padding: 7px 16px; border-radius: 2px; font-size: 12px; margin-top: 12px; width: 100%; cursor: pointer; font-family: inherit; }
 .cdisc { color: #2e2718; font-size: 11px; text-align: center; margin-top: 12px; }
-#at, #ct { display: none; }
-#at.v, #ct.v { display: block; }
-#result { display: none; }
-#result.v { display: block; }
-#ibanner { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #1a1612; border-top: 1px solid rgba(232,213,163,0.15); padding: 12px 18px; flex-direction: row; align-items: center; gap: 12px; z-index: 100; }
-#ibanner.show { display: flex; }
-#itext { flex: 1; font-size: 13px; color: #c8b896; line-height: 1.4; }
-#itext b { color: #e8d5a3; display: block; margin-bottom: 2px; }
-#ibtn { background: #e8d5a3; color: #0e0c09; border: none; padding: 8px 16px; border-radius: 3px; font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; }
-#idismiss { background: none; border: none; color: #4a3f2f; font-size: 20px; cursor: pointer; }
-#iostip { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #1a1612; border-top: 1px solid rgba(232,213,163,0.15); padding: 14px 18px 14px 18px; z-index: 100; }
-#iostip.show { display: block; }
-#iostip p { font-size: 13px; color: #c8b896; line-height: 1.6; padding-right: 30px; }
-#iostip p b { color: #e8d5a3; }
-#iostip-close { position: absolute; top: 12px; right: 16px; background: none; border: none; color: #4a3f2f; font-size: 20px; cursor: pointer; }
+#at,#ct{display:none}#at.v,#ct.v{display:block}
+#result{display:none}#result.v{display:block}
+#ibanner{display:none;position:fixed;bottom:0;left:0;right:0;background:#1a1612;border-top:1px solid rgba(232,213,163,0.15);padding:12px 18px;flex-direction:row;align-items:center;gap:12px;z-index:100}
+#ibanner.show{display:flex}
+#itext{flex:1;font-size:13px;color:#c8b896;line-height:1.4}
+#itext b{color:#e8d5a3;display:block;margin-bottom:2px}
+#ibtn{background:#e8d5a3;color:#0e0c09;border:none;padding:8px 16px;border-radius:3px;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit}
+#idismiss{background:none;border:none;color:#4a3f2f;font-size:20px;cursor:pointer}
+#iostip{display:none;position:fixed;bottom:0;left:0;right:0;background:#1a1612;border-top:1px solid rgba(232,213,163,0.15);padding:14px 18px;z-index:100}
+#iostip.show{display:block}
+#iostip p{font-size:13px;color:#c8b896;line-height:1.6;padding-right:30px}
+#iostip p b{color:#e8d5a3}
+#iostip-close{position:absolute;top:12px;right:16px;background:none;border:none;color:#4a3f2f;font-size:20px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -94,8 +113,6 @@ input::placeholder { color: #4a3f2f; }
     <button class="tab on" onclick="switchTab('a')">Ticker Analysis</button>
     <button class="tab" onclick="switchTab('c')">Entry Checklist</button>
   </div>
-
-  <!-- ANALYZE TAB -->
   <div id="at" class="v">
     <div class="inrow">
       <input type="text" id="ti" placeholder="Enter any ticker: SPY, AAPL, NVDA..." oninput="upd()" onkeydown="if(event.key==='Enter')go()" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
@@ -103,12 +120,10 @@ input::placeholder { color: #4a3f2f; }
     </div>
     <div class="chips" id="chips"></div>
     <div id="result"></div>
-    <div class="empty" id="empty">Enter any ticker above or tap a quick pick<br>to see a live entry timing analysis</div>
+    <div class="empty" id="empty">Enter any ticker above or tap a quick pick<br>to get a full live analysis</div>
   </div>
-
-  <!-- CHECKLIST TAB -->
   <div id="ct">
-    <p style="color:#c8b896;font-size:13px;margin-bottom:16px;line-height:1.6">Run through this before any entry. Each check represents a condition that historically improves the odds of a successful trade.</p>
+    <p style="color:#c8b896;font-size:13px;margin-bottom:16px;line-height:1.6">Run through this before any entry. Each check represents a condition that historically improves trade success.</p>
     <div id="clist"></div>
     <div class="scorebox" id="sbox">
       <div><div class="slabel" id="slabel">Not Yet</div><div class="ssub" id="ssub">0 of 12 pts &middot; 0%</div></div>
@@ -118,8 +133,6 @@ input::placeholder { color: #4a3f2f; }
     <div class="cdisc">Higher score = better conditions &middot; Not a guarantee &middot; Educational only</div>
   </div>
 </div>
-
-<!-- PWA banners -->
 <div id="ibanner">
   <div id="itext"><b>Add to Home Screen</b>Install Entry Timing as an app</div>
   <button id="ibtn" onclick="installApp()">Install</button>
@@ -127,217 +140,388 @@ input::placeholder { color: #4a3f2f; }
 </div>
 <div id="iostip">
   <button id="iostip-close" onclick="document.getElementById('iostip').classList.remove('show')">&#215;</button>
-  <p><b>Install on iPhone:</b><br>Tap the <b>Share button</b> (&nearr;) at the bottom of Safari, then tap <b>"Add to Home Screen"</b></p>
+  <p><b>Install on iPhone:</b><br>Tap the <b>Share button</b> (&nearr;) in Safari, then tap <b>"Add to Home Screen"</b></p>
 </div>
 
 <script>
 const AV_KEY = "78L3SVHLY4BTE2Q4";
 const TICKERS = ["SPY","QQQ","AAPL","NVDA","MSFT","VTI","AMZN","TSLA","BRK.B","GOOGL","META","JPM"];
 
+// ── Chips ────────────────────────────────────────────────────
+const chipEl = document.getElementById("chips");
+TICKERS.forEach(t => {
+  const b = document.createElement("button");
+  b.className = "chip"; b.textContent = t;
+  b.onclick = () => { document.getElementById("ti").value = t; go(); };
+  chipEl.appendChild(b);
+});
+function upd() { document.getElementById("ab").classList.toggle("on", document.getElementById("ti").value.trim().length > 0); }
+
 // ── Checklist ────────────────────────────────────────────────
-const CL=[{id:"trend",l:"Stock is above its 200-day moving average",w:2},{id:"pb",l:"Stock has pulled back 8%+ from recent high",w:2},{id:"vol",l:"Recent pullback on lower volume (not panic selling)",w:1},{id:"sec",l:"Sector ETF is also in an uptrend",w:1},{id:"mkt",l:"SPY/QQQ is in an uptrend",w:2},{id:"earn",l:"No earnings in the next 2 weeks",w:1},{id:"sup",l:"Near a known support level or moving average",w:2},{id:"cat",l:"You have a clear reason to buy (catalyst/thesis)",w:1}];
-const MS=CL.reduce((s,c)=>s+c.w,0);
-let chks={};
-const cEl=document.getElementById("clist");
-CL.forEach(i=>{const d=document.createElement("div");d.className="ci";d.id="ci"+i.id;d.innerHTML='<div class="cbox" id="cb'+i.id+'"></div><div style="flex:1"><span class="clabel">'+i.l+'</span><span class="cstars">'+"●".repeat(i.w)+'</span></div>';d.onclick=()=>tog(i.id);cEl.appendChild(d);});
-function tog(id){chks[id]=!chks[id];document.getElementById("ci"+id).classList.toggle("chk",chks[id]);const cb=document.getElementById("cb"+id);cb.classList.toggle("chk",chks[id]);cb.textContent=chks[id]?"✓":"";upS();}
-function upS(){const sc=Object.entries(chks).reduce((s,[id,v])=>{const i=CL.find(c=>c.id===id);return s+(v&&i?i.w:0);},0);const p=Math.round((sc/MS)*100);const r=p>=75?{l:"Strong Entry",c:"#00d4aa"}:p>=50?{l:"Borderline",c:"#f5a623"}:{l:"Not Yet",c:"#ff4d4d"};const b=document.getElementById("sbox");b.style.background=r.c+"0f";b.style.border="1px solid "+r.c+"35";document.getElementById("slabel").style.color=r.c;document.getElementById("slabel").textContent=r.l;document.getElementById("ssub").textContent=sc+" of "+MS+" pts · "+p+"%";document.getElementById("spct").style.color=r.c;document.getElementById("spct").textContent=p+"%";}
-function resetC(){chks={};CL.forEach(i=>{document.getElementById("ci"+i.id).classList.remove("chk");const cb=document.getElementById("cb"+i.id);cb.classList.remove("chk");cb.textContent="";});upS();}
+const CL=[{id:"trend",l:"Stock is above its 200-day moving average",w:2},{id:"pb",l:"Stock has pulled back 8%+ from recent high",w:2},{id:"vol",l:"Pullback happened on lower-than-normal volume",w:1},{id:"sec",l:"Sector ETF is also in an uptrend",w:1},{id:"mkt",l:"SPY/QQQ is in an uptrend",w:2},{id:"earn",l:"No earnings release in the next 2 weeks",w:1},{id:"sup",l:"Price is near a known support level or moving average",w:2},{id:"cat",l:"You have a clear reason to buy (catalyst/thesis)",w:1}];
+const MS = CL.reduce((s,c)=>s+c.w,0);
+let chks = {};
+const cEl = document.getElementById("clist");
+CL.forEach(i => {
+  const d = document.createElement("div");
+  d.className="ci"; d.id="ci"+i.id;
+  d.innerHTML='<div class="cbox" id="cb'+i.id+'"></div><div style="flex:1"><span class="clabel">'+i.l+'</span><span class="cstars">'+"\u25CF".repeat(i.w)+'</span></div>';
+  d.onclick=()=>tog(i.id); cEl.appendChild(d);
+});
+function tog(id) {
+  chks[id]=!chks[id];
+  document.getElementById("ci"+id).classList.toggle("chk",chks[id]);
+  const cb=document.getElementById("cb"+id);
+  cb.classList.toggle("chk",chks[id]);
+  cb.textContent=chks[id]?"✓":"";
+  upS();
+}
+function upS() {
+  const sc=Object.entries(chks).reduce((s,[id,v])=>{const i=CL.find(c=>c.id===id);return s+(v&&i?i.w:0);},0);
+  const p=Math.round((sc/MS)*100);
+  const r=p>=75?{l:"Strong Entry",c:"#00d4aa"}:p>=50?{l:"Borderline",c:"#f5a623"}:{l:"Not Yet",c:"#ff4d4d"};
+  const b=document.getElementById("sbox");
+  b.style.background=r.c+"0f"; b.style.border="1px solid "+r.c+"35";
+  document.getElementById("slabel").style.color=r.c;
+  document.getElementById("slabel").textContent=r.l;
+  document.getElementById("ssub").textContent=sc+" of "+MS+" pts · "+p+"%";
+  document.getElementById("spct").style.color=r.c;
+  document.getElementById("spct").textContent=p+"%";
+}
+function resetC() {
+  chks={};
+  CL.forEach(i=>{document.getElementById("ci"+i.id).classList.remove("chk");const cb=document.getElementById("cb"+i.id);cb.classList.remove("chk");cb.textContent="";});
+  upS();
+}
 
-// ── Quick-pick chips ─────────────────────────────────────────
-const chipEl=document.getElementById("chips");
-TICKERS.forEach(t=>{const b=document.createElement("button");b.className="chip";b.textContent=t;b.onclick=()=>{document.getElementById("ti").value=t;go();};chipEl.appendChild(b);});
+// ── API helpers ──────────────────────────────────────────────
+async function avFetch(params) {
+  const qs = Object.entries({...params, apikey: AV_KEY}).map(([k,v])=>k+"="+v).join("&");
+  const r = await fetch("https://www.alphavantage.co/query?" + qs);
+  return r.json();
+}
 
-function upd(){const v=document.getElementById("ti").value.trim();document.getElementById("ab").classList.toggle("on",v.length>0);}
+async function fetchAll(sym) {
+  // Run all fetches in parallel (5 calls total — right at free tier limit per minute)
+  const [quote, sma50d, sma200d, rsiD, overview] = await Promise.all([
+    avFetch({function:"GLOBAL_QUOTE", symbol:sym}),
+    avFetch({function:"SMA", symbol:sym, interval:"daily", time_period:50, series_type:"close"}),
+    avFetch({function:"SMA", symbol:sym, interval:"daily", time_period:200, series_type:"close"}),
+    avFetch({function:"RSI", symbol:sym, interval:"daily", time_period:14, series_type:"close"}),
+    avFetch({function:"OVERVIEW", symbol:sym}),
+  ]);
 
-// ── Alpha Vantage fetch ──────────────────────────────────────
-async function fetchQuote(sym) {
-  const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${sym}&apikey=${AV_KEY}`;
-  const r = await fetch(url);
-  const d = await r.json();
-  const q = d["Global Quote"];
-  if (!q || !q["05. price"]) throw new Error("No data for " + sym + ". Check the ticker or try again later.");
+  const q = quote["Global Quote"];
+  if (!q || !q["05. price"]) throw new Error("No data found for \"" + sym + "\". Check the ticker symbol and try again.");
+
+  const getFirst = (obj, key) => { const v = obj && Object.values(obj)[0]; return v ? parseFloat(v[key]) : null; };
+
   return {
-    price:   parseFloat(q["05. price"]),
-    open:    parseFloat(q["02. open"]),
-    high:    parseFloat(q["03. high"]),
-    low:     parseFloat(q["04. low"]),
-    prev:    parseFloat(q["08. previous close"]),
-    change:  parseFloat(q["09. change"]),
-    changePct: q["10. change percent"],
-    volume:  parseInt(q["06. volume"]),
+    price:      parseFloat(q["05. price"]),
+    open:       parseFloat(q["02. open"]),
+    high:       parseFloat(q["03. high"]),
+    low:        parseFloat(q["04. low"]),
+    prev:       parseFloat(q["08. previous close"]),
+    change:     parseFloat(q["09. change"]),
+    changePct:  parseFloat(q["10. change percent"]),
+    volume:     parseInt(q["06. volume"]),
+    sma50:      getFirst(sma50d["Technical Analysis: SMA"], "SMA"),
+    sma200:     getFirst(sma200d["Technical Analysis: SMA"], "SMA"),
+    rsi:        getFirst(rsiD["Technical Analysis: RSI"], "RSI"),
+    // Overview / fundamentals
+    name:       overview["Name"] || sym,
+    sector:     overview["Sector"] || null,
+    pe:         overview["PERatio"] ? parseFloat(overview["PERatio"]) : null,
+    fwdPE:      overview["ForwardPE"] ? parseFloat(overview["ForwardPE"]) : null,
+    week52High: overview["52WeekHigh"] ? parseFloat(overview["52WeekHigh"]) : null,
+    week52Low:  overview["52WeekLow"]  ? parseFloat(overview["52WeekLow"])  : null,
+    analystTarget:    overview["AnalystTargetPrice"] ? parseFloat(overview["AnalystTargetPrice"]) : null,
+    analystBuy:       overview["AnalystRatingStrongBuy"] ? (parseInt(overview["AnalystRatingStrongBuy"])||0) + (parseInt(overview["AnalystRatingBuy"])||0) : null,
+    analystHold:      overview["AnalystRatingHold"] ? parseInt(overview["AnalystRatingHold"]) : null,
+    analystSell:      overview["AnalystRatingSell"] ? (parseInt(overview["AnalystRatingSell"])||0) + (parseInt(overview["AnalystRatingStrongSell"])||0) : null,
+    profitMargin:     overview["ProfitMargin"] ? parseFloat(overview["ProfitMargin"]) : null,
+    revenueGrowthYoy: overview["QuarterlyRevenueGrowthYOY"] ? parseFloat(overview["QuarterlyRevenueGrowthYOY"]) : null,
+    eps:              overview["EPS"] ? parseFloat(overview["EPS"]) : null,
+    dividendYield:    overview["DividendYield"] ? parseFloat(overview["DividendYield"]) : null,
+    beta:             overview["Beta"] ? parseFloat(overview["Beta"]) : null,
+    marketCap:        overview["MarketCapitalization"] ? parseInt(overview["MarketCapitalization"]) : null,
   };
 }
 
-async function fetchSMA(sym, period) {
-  const url = `https://www.alphavantage.co/query?function=SMA&symbol=${sym}&interval=daily&time_period=${period}&series_type=close&apikey=${AV_KEY}`;
-  const r = await fetch(url);
-  const d = await r.json();
-  const series = d["Technical Analysis: SMA"];
-  if (!series) return null;
-  const latest = Object.values(series)[0];
-  return parseFloat(latest["SMA"]);
+// ── Format helpers ───────────────────────────────────────────
+function fmtMktCap(n) {
+  if (!n) return null;
+  if (n >= 1e12) return "$" + (n/1e12).toFixed(1) + "T";
+  if (n >= 1e9)  return "$" + (n/1e9).toFixed(1)  + "B";
+  if (n >= 1e6)  return "$" + (n/1e6).toFixed(1)  + "M";
+  return "$" + n;
 }
 
-async function fetchRSI(sym) {
-  const url = `https://www.alphavantage.co/query?function=RSI&symbol=${sym}&interval=daily&time_period=14&series_type=close&apikey=${AV_KEY}`;
-  const r = await fetch(url);
-  const d = await r.json();
-  const series = d["Technical Analysis: RSI"];
-  if (!series) return null;
-  const latest = Object.values(series)[0];
-  return parseFloat(latest["RSI"]);
-}
+// ── Plain English summary ────────────────────────────────────
+function buildSummary(d) {
+  const { sym, price, sma200, sma50, rsi, week52High, week52Low, analystTarget, analystBuy, analystHold, analystSell, pe, revenueGrowthYoy, changePct, name } = d;
 
-// ── Analysis engine ──────────────────────────────────────────
-function analyzeData(sym, quote, sma50, sma200, rsi) {
-  const { price, prev, change, changePct, high, low, volume } = quote;
-  const signals = [];
-  let bullCount = 0, bearCount = 0;
+  const above200 = sma200 && price > sma200;
+  const pctOff52High = week52High ? ((week52High - price) / week52High * 100) : null;
+  const pctAbove52Low = week52Low ? ((price - week52Low) / week52Low * 100) : null;
+  const analystUpside = analystTarget ? ((analystTarget - price) / price * 100) : null;
+  const totalAnalysts = (analystBuy||0) + (analystHold||0) + (analystSell||0);
+  const buyPct = totalAnalysts > 0 ? Math.round((analystBuy/totalAnalysts)*100) : null;
 
-  // Price vs MAs
-  const above50  = sma50  ? price > sma50  : null;
-  const above200 = sma200 ? price > sma200 : null;
+  const parts = [];
 
-  if (above200 === true)  { signals.push({t:"Above 200-day MA",k:"bull"}); bullCount++; }
-  if (above200 === false) { signals.push({t:"Below 200-day MA",k:"bear"}); bearCount += 2; }
-  if (above50  === true)  { signals.push({t:"Above 50-day MA",k:"bull"}); bullCount++; }
-  if (above50  === false) { signals.push({t:"Below 50-day MA",k:"bear"}); bearCount++; }
+  // Position vs 52w
+  if (pctOff52High !== null) {
+    if (pctOff52High > 30) parts.push(sym + " is down " + pctOff52High.toFixed(0) + "% from its 52-week high — deep in discount territory.");
+    else if (pctOff52High > 15) parts.push(sym + " is trading " + pctOff52High.toFixed(0) + "% off its highs — a notable pullback.");
+    else if (pctOff52High < 5) parts.push(sym + " is near its 52-week high — trading at a premium right now.");
+    else parts.push(sym + " is " + pctOff52High.toFixed(0) + "% off its 52-week high.");
+  }
+
+  // Trend
+  if (above200) parts.push("It's in an uptrend (above its 200-day moving average).");
+  else if (sma200) parts.push("It's currently in a downtrend — trading below its 200-day moving average, which is a yellow flag.");
 
   // RSI
-  let rsiText = "", rsiSignal = "neut";
   if (rsi !== null) {
-    if (rsi < 30)      { rsiText = `RSI ${rsi.toFixed(0)} — Oversold`; rsiSignal = "bull"; bullCount += 2; }
-    else if (rsi < 45) { rsiText = `RSI ${rsi.toFixed(0)} — Weak momentum`; rsiSignal = "neut"; }
-    else if (rsi < 60) { rsiText = `RSI ${rsi.toFixed(0)} — Neutral`; rsiSignal = "neut"; }
-    else if (rsi < 70) { rsiText = `RSI ${rsi.toFixed(0)} — Strong momentum`; rsiSignal = "bull"; bullCount++; }
-    else               { rsiText = `RSI ${rsi.toFixed(0)} — Overbought`; rsiSignal = "bear"; bearCount += 2; }
-    signals.push({t: rsiText, k: rsiSignal});
+    if (rsi < 30) parts.push("RSI is deeply oversold (" + rsi.toFixed(0) + ") — technically the stock looks cheap and could bounce.");
+    else if (rsi < 40) parts.push("Momentum is weak (RSI " + rsi.toFixed(0) + ") but not at extremes.");
+    else if (rsi > 75) parts.push("RSI is overbought (" + rsi.toFixed(0) + ") — the stock may be extended and due for a pullback.");
+    else if (rsi > 60) parts.push("Momentum is strong (RSI " + rsi.toFixed(0) + ").");
   }
 
-  // Day change
-  const dayPct = ((price - prev) / prev * 100);
-  if (dayPct < -2) { signals.push({t:`Down ${Math.abs(dayPct).toFixed(1)}% today`,k:"bear"}); bearCount++; }
-  else if (dayPct > 2) { signals.push({t:`Up ${dayPct.toFixed(1)}% today`,k:"bull"}); bullCount++; }
-
-  // Verdict
-  let verdict, vColor;
-  if (bearCount >= 3)       { verdict = "AVOID";    vColor = "#ff4d4d"; }
-  else if (bullCount >= 3)  { verdict = "BUY";      vColor = "#00d4aa"; }
-  else                      { verdict = "WAIT";     vColor = "#f5a623"; }
-
-  // Entry timing text
-  let entryText = "";
-  if (above200 === false) {
-    entryText = `${sym} is currently trading below its 200-day moving average ($${sma200?sma200.toFixed(2):"N/A"}), which is generally a bearish signal. Wait for price to reclaim the 200-day before considering an entry.`;
-  } else if (rsi && rsi < 35) {
-    entryText = `${sym} shows oversold RSI conditions (${rsi.toFixed(0)}), suggesting a potential bounce. Current price $${price.toFixed(2)} is above the 200-day MA — this could be a good entry zone for dip buyers.`;
-  } else if (rsi && rsi > 70) {
-    entryText = `${sym} is overbought (RSI ${rsi.toFixed(0)}) and may be extended. Consider waiting for a pullback toward the 50-day MA ($${sma50?sma50.toFixed(2):"N/A"}) before entering.`;
-  } else {
-    entryText = `${sym} is trading at $${price.toFixed(2)}, ${above200?"above":"below"} its 200-day MA. Look for entries near support levels or after a 5-10% pullback. RSI at ${rsi?rsi.toFixed(0):"N/A"} shows ${rsi&&rsi<50?"weak":"moderate"} momentum.`;
+  // Analyst target
+  if (analystUpside !== null && totalAnalysts >= 5) {
+    if (analystUpside > 25) parts.push("Wall Street analysts have an average price target of $" + analystTarget.toFixed(0) + " — that's " + analystUpside.toFixed(0) + "% upside from here.");
+    else if (analystUpside > 10) parts.push("Analysts see " + analystUpside.toFixed(0) + "% upside to their average target of $" + analystTarget.toFixed(0) + ".");
+    else if (analystUpside < 0) parts.push("Analysts' average target of $" + analystTarget.toFixed(0) + " is actually below the current price — they think it may be overvalued.");
+    else parts.push("Analysts' average target is $" + analystTarget.toFixed(0) + " (" + analystUpside.toFixed(0) + "% upside).");
   }
 
-  const keyLevels = [
-    sma50  ? `50-day MA: $${sma50.toFixed(2)}`   : null,
-    sma200 ? `200-day MA: $${sma200.toFixed(2)}` : null,
-    `Today's range: $${low.toFixed(2)} — $${high.toFixed(2)}`,
-  ].filter(Boolean).join(" · ");
+  // Buy consensus
+  if (buyPct !== null && totalAnalysts >= 5) {
+    if (buyPct >= 70) parts.push(buyPct + "% of " + totalAnalysts + " analysts say Buy.");
+    else if (buyPct >= 50) parts.push(buyPct + "% of analysts are bullish (" + totalAnalysts + " total).");
+    else parts.push("Only " + buyPct + "% of analysts rate it a Buy — mixed sentiment on Wall Street.");
+  }
 
-  const riskReward = above200
-    ? `Support near 50-day MA ($${sma50?sma50.toFixed(2):"N/A"}). A stop below the 200-day MA ($${sma200?sma200.toFixed(2):"N/A"}) limits downside. Size position so this stop risks only 1-2% of your portfolio.`
-    : `High risk — price is below the 200-day MA. If you enter, keep position size very small. Wait for reclaim of 200-day MA to confirm recovery.`;
+  // Revenue growth
+  if (revenueGrowthYoy !== null) {
+    const g = (revenueGrowthYoy * 100).toFixed(0);
+    if (revenueGrowthYoy > 0.2) parts.push("Revenue is growing fast — up " + g + "% year over year.");
+    else if (revenueGrowthYoy > 0.05) parts.push("Revenue growth is solid at +" + g + "% YoY.");
+    else if (revenueGrowthYoy < 0) parts.push("Revenue is actually declining (" + g + "% YoY) — a fundamental concern.");
+  }
 
-  return { verdict, vColor, signals, entryText, keyLevels, riskReward, rsi };
+  // P/E context
+  if (pe !== null && !isNaN(pe) && pe > 0) {
+    if (pe < 15) parts.push("At a P/E of " + pe.toFixed(0) + ", it looks cheap relative to the market.");
+    else if (pe > 50) parts.push("With a P/E of " + pe.toFixed(0) + ", you're paying a premium — growth expectations are baked in.");
+    else parts.push("P/E ratio is " + pe.toFixed(0) + " — reasonable for its sector.");
+  }
+
+  if (parts.length === 0) parts.push("Loading analysis for " + sym + "...");
+
+  // Determine tone class
+  let cls = "neut";
+  const bullScore = (above200 ? 1 : 0) + (rsi && rsi < 40 ? 1 : 0) + (analystUpside && analystUpside > 15 ? 1 : 0) + (buyPct && buyPct >= 60 ? 1 : 0) + (pctOff52High && pctOff52High > 20 ? 1 : 0);
+  const bearScore = (!above200 && sma200 ? 1 : 0) + (rsi && rsi > 70 ? 1 : 0) + (analystUpside && analystUpside < 0 ? 1 : 0) + (pctOff52High && pctOff52High < 3 ? 1 : 0);
+  if (bullScore >= 3) cls = "bull";
+  else if (bearScore >= 2) cls = "bear";
+
+  return { text: parts.join(" "), cls };
 }
 
-// ── Main go() ────────────────────────────────────────────────
+// ── Verdict logic ────────────────────────────────────────────
+function getVerdict(d) {
+  const { price, sma200, sma50, rsi, analystUpside, buyPct, pctOff52High } = d;
+  let bull = 0, bear = 0;
+  if (sma200 && price > sma200) bull++; else if (sma200) bear += 2;
+  if (sma50  && price > sma50)  bull++; else if (sma50)  bear++;
+  if (rsi !== null) {
+    if (rsi < 35) bull += 2;
+    else if (rsi > 72) bear += 2;
+  }
+  if (analystUpside > 20) bull++;
+  if (analystUpside < 0)  bear++;
+  if (buyPct >= 65) bull++;
+  if (buyPct < 40 && buyPct !== null) bear++;
+  if (bull >= 4)   return { v: "BUY",   c: "#00d4aa" };
+  if (bear >= 3)   return { v: "AVOID", c: "#ff4d4d" };
+  return           { v: "WAIT",  c: "#f5a623" };
+}
+
+// ── Signals ──────────────────────────────────────────────────
+function getSignals(d) {
+  const sigs = [];
+  const { price, sma50, sma200, rsi, changePct, analystUpside, buyPct, revenueGrowthYoy, pe } = d;
+  if (sma200) { if (price > sma200) sigs.push({t:"Above 200-day MA",k:"bull"}); else sigs.push({t:"Below 200-day MA",k:"bear"}); }
+  if (sma50)  { if (price > sma50)  sigs.push({t:"Above 50-day MA",k:"bull"}); else sigs.push({t:"Below 50-day MA",k:"bear"}); }
+  if (rsi !== null) {
+    if (rsi < 30) sigs.push({t:"RSI Oversold ("+rsi.toFixed(0)+")",k:"bull"});
+    else if (rsi > 70) sigs.push({t:"RSI Overbought ("+rsi.toFixed(0)+")",k:"bear"});
+    else sigs.push({t:"RSI "+rsi.toFixed(0),k:"neut"});
+  }
+  if (changePct > 2)  sigs.push({t:"Up "+changePct.toFixed(1)+"% today",k:"bull"});
+  if (changePct < -2) sigs.push({t:"Down "+Math.abs(changePct).toFixed(1)+"% today",k:"bear"});
+  if (analystUpside !== null) {
+    if (analystUpside > 15) sigs.push({t:"Analysts: +"+analystUpside.toFixed(0)+"% target",k:"bull"});
+    else if (analystUpside < 0) sigs.push({t:"Analysts: below market",k:"bear"});
+  }
+  if (buyPct !== null) {
+    if (buyPct >= 70) sigs.push({t:buyPct+"% analyst Buy ratings",k:"bull"});
+    else if (buyPct < 40) sigs.push({t:"Mixed analyst ratings",k:"bear"});
+  }
+  if (revenueGrowthYoy > 0.15) sigs.push({t:"Revenue +"+(revenueGrowthYoy*100).toFixed(0)+"% YoY",k:"bull"});
+  if (revenueGrowthYoy < 0)    sigs.push({t:"Revenue declining",k:"bear"});
+  return sigs;
+}
+
+// ── Main ─────────────────────────────────────────────────────
 async function go() {
   const sym = document.getElementById("ti").value.trim().toUpperCase();
   if (!sym) return;
   document.getElementById("empty").style.display = "none";
   const r = document.getElementById("result");
   r.className = "v";
-  r.innerHTML = `<div class="loading-box">Fetching live data for ${sym}…<br><div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+  r.innerHTML = '<div class="loading-box">Fetching live data for ' + sym + '…<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
 
   try {
-    // Fetch quote first (fastest)
-    const quote = await fetchQuote(sym);
+    const raw = await fetchAll(sym);
+    const d = { sym, ...raw };
 
-    // Show price immediately
-    const changePct = ((quote.price - quote.prev) / quote.prev * 100);
-    const updown = changePct >= 0 ? "up" : "down";
-    r.innerHTML = `
-      <div class="loading-box">Loading technical indicators…<br><div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
-    `;
+    // Derived
+    d.pctOff52High = d.week52High ? ((d.week52High - d.price) / d.week52High * 100) : null;
+    d.pctAbove52Low = d.week52Low ? ((d.price - d.week52Low) / d.week52Low * 100) : null;
+    d.analystUpside = d.analystTarget ? ((d.analystTarget - d.price) / d.price * 100) : null;
+    const total = (d.analystBuy||0) + (d.analystHold||0) + (d.analystSell||0);
+    d.buyPct = total > 0 ? Math.round((d.analystBuy/total)*100) : null;
+    d.totalAnalysts = total;
 
-    // Fetch SMA and RSI (parallel — uses 3 of 5 free calls per minute)
-    const [sma50, sma200, rsi] = await Promise.all([
-      fetchSMA(sym, 50),
-      fetchSMA(sym, 200),
-      fetchRSI(sym),
-    ]);
+    const { v: verdict, c: vColor } = getVerdict(d);
+    const signals = getSignals(d);
+    const { text: summaryText, cls: summaryCls } = buildSummary(d);
+    const changePctStr = (d.changePct >= 0 ? "+" : "") + d.changePct.toFixed(2) + "%";
+    const changeClass = d.changePct >= 0 ? "up" : "down";
 
-    const { verdict, vColor, signals, entryText, keyLevels, riskReward } = analyzeData(sym, quote, sma50, sma200, rsi);
+    // 52w bar HTML
+    let week52HTML = "";
+    if (d.week52High && d.week52Low) {
+      const range = d.week52High - d.week52Low;
+      const pos = range > 0 ? ((d.price - d.week52Low) / range * 100) : 50;
+      week52HTML = `
+        <div class="week52-wrap">
+          <div class="abar-label">52-Week Range</div>
+          <div class="week52-track">
+            <div class="week52-fill" style="width:100%"></div>
+            <div class="week52-dot" style="left:${Math.min(98,Math.max(2,pos))}%"></div>
+          </div>
+          <div class="week52-labels">
+            <span>Low $${d.week52Low.toFixed(0)}</span>
+            <span>Current $${d.price.toFixed(2)}</span>
+            <span>High $${d.week52High.toFixed(0)}</span>
+          </div>
+        </div>`;
+    }
 
-    const changeStr = (changePct >= 0 ? "+" : "") + changePct.toFixed(2) + "%";
-    const changeClass = changePct >= 0 ? "up" : "down";
+    // Analyst bar HTML
+    let analystHTML = "";
+    if (d.totalAnalysts >= 3) {
+      const bw = Math.round((d.analystBuy/d.totalAnalysts)*100);
+      const hw = Math.round((d.analystHold/d.totalAnalysts)*100);
+      const sw = 100 - bw - hw;
+      analystHTML = `
+        <div>
+          <div class="abar-label">Analyst Ratings &mdash; ${d.totalAnalysts} analysts${d.analystTarget ? " &middot; Avg target $"+d.analystTarget.toFixed(0) : ""}</div>
+          <div class="analyst-bar">
+            ${bw > 0 ? `<div class="abar-buy" style="width:${bw}%">${bw}% Buy</div>` : ""}
+            ${hw > 0 ? `<div class="abar-hold" style="width:${hw}%">${hw > 15 ? hw+"% Hold" : ""}</div>` : ""}
+            ${sw > 0 ? `<div class="abar-sell" style="width:${sw}%">${sw > 15 ? sw+"% Sell" : ""}</div>` : ""}
+          </div>
+        </div>`;
+    }
+
+    // Fundamentals card
+    const fundRows = [];
+    if (d.pe && !isNaN(d.pe) && d.pe > 0)      fundRows.push(["P/E Ratio", d.pe.toFixed(0), d.pe < 20 ? "up" : d.pe > 45 ? "warn" : ""]);
+    if (d.fwdPE && !isNaN(d.fwdPE) && d.fwdPE > 0) fundRows.push(["Fwd P/E", d.fwdPE.toFixed(0), d.fwdPE < 20 ? "up" : d.fwdPE > 40 ? "warn" : ""]);
+    if (d.eps)           fundRows.push(["EPS", "$"+d.eps.toFixed(2), d.eps > 0 ? "up" : "down"]);
+    if (d.revenueGrowthYoy !== null) fundRows.push(["Rev Growth YoY", (d.revenueGrowthYoy*100).toFixed(0)+"%", d.revenueGrowthYoy > 0.1 ? "up" : d.revenueGrowthYoy < 0 ? "down" : ""]);
+    if (d.profitMargin)  fundRows.push(["Profit Margin", (d.profitMargin*100).toFixed(0)+"%", d.profitMargin > 0.2 ? "up" : d.profitMargin < 0.05 ? "warn" : ""]);
+    if (d.dividendYield && d.dividendYield > 0) fundRows.push(["Dividend Yield", (d.dividendYield*100).toFixed(1)+"%", "up"]);
+    if (d.beta)          fundRows.push(["Beta", d.beta.toFixed(1), d.beta > 1.5 ? "warn" : ""]);
+    if (d.marketCap)     fundRows.push(["Market Cap", fmtMktCap(d.marketCap), ""]);
+
+    const fundHTML = fundRows.length > 0 ? `
+      <div class="card">
+        <div class="ctitle">Fundamentals</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px">
+          ${fundRows.map(([l,v,cls]) => `<div class="price-item"><div class="price-label">${l}</div><div class="price-val ${cls}">${v}</div></div>`).join("")}
+        </div>
+      </div>` : "";
+
+    // Entry & risk text
+    const above200 = d.sma200 && d.price > d.sma200;
+    const entryText = above200
+      ? `${sym} is in an uptrend. Look for entries on pullbacks toward the 50-day MA ($${d.sma50 ? d.sma50.toFixed(2) : "N/A"}) or after a 5-10% dip from recent highs. ${d.pctOff52High > 10 ? "Currently " + d.pctOff52High.toFixed(0) + "% off its highs — a decent entry window." : "Near highs — consider waiting for a pullback."}`
+      : `${sym} is below its 200-day MA ($${d.sma200 ? d.sma200.toFixed(2) : "N/A"}), meaning it's in a downtrend. High-risk entry. Wait for the price to reclaim the 200-day before buying, or use very small size.`;
+
+    const riskText = `Stop loss: below the ${above200 ? "50-day MA ($"+(d.sma50?d.sma50.toFixed(2):"N/A")+")" : "200-day MA ($"+(d.sma200?d.sma200.toFixed(2):"N/A")+")"}.${d.analystTarget ? " Analyst price target: $"+d.analystTarget.toFixed(0)+" ("+d.analystUpside.toFixed(0)+"% from here)." : ""} Size your position so the stop loss risks no more than 1-2% of your total portfolio.`;
 
     r.innerHTML = `
       <div class="ticker-hdr">
         <span class="tname">${sym}</span>
         <span class="badge" style="background:${vColor}18;border:1px solid ${vColor}45;color:${vColor}">${verdict}</span>
+        ${d.sector ? `<span style="font-size:11px;color:#4a3f2f">${d.sector}</span>` : ""}
+      </div>
+
+      <div class="summary-card ${summaryCls}">
+        <div class="summary-title">&#128214; Plain English Summary</div>
+        <div class="summary-text">${summaryText}</div>
       </div>
 
       <div class="price-row">
-        <div class="price-item">
-          <div class="price-label">Price</div>
-          <div class="price-val">$${quote.price.toFixed(2)}</div>
-        </div>
-        <div class="price-item">
-          <div class="price-label">Today</div>
-          <div class="price-val ${changeClass}">${changeStr}</div>
-        </div>
-        ${sma50 ? `<div class="price-item"><div class="price-label">50-day MA</div><div class="price-val">$${sma50.toFixed(2)}</div></div>` : ""}
-        ${sma200 ? `<div class="price-item"><div class="price-label">200-day MA</div><div class="price-val">$${sma200.toFixed(2)}</div></div>` : ""}
-        ${rsi !== null ? `<div class="price-item"><div class="price-label">RSI (14)</div><div class="price-val">${rsi.toFixed(1)}</div></div>` : ""}
+        <div class="price-item"><div class="price-label">Price</div><div class="price-val">$${d.price.toFixed(2)}</div></div>
+        <div class="price-item"><div class="price-label">Today</div><div class="price-val ${changeClass}">${changePctStr}</div></div>
+        ${d.sma50  ? `<div class="price-item"><div class="price-label">50-day MA</div><div class="price-val">${d.price > d.sma50 ? "↑" : "↓"} $${d.sma50.toFixed(2)}</div></div>` : ""}
+        ${d.sma200 ? `<div class="price-item"><div class="price-label">200-day MA</div><div class="price-val ${above200 ? "up" : "down"}">${above200 ? "↑" : "↓"} $${d.sma200.toFixed(2)}</div></div>` : ""}
+        ${d.rsi !== null ? `<div class="price-item"><div class="price-label">RSI (14)</div><div class="price-val ${d.rsi < 35 ? "up" : d.rsi > 70 ? "down" : ""}">${d.rsi.toFixed(1)}</div></div>` : ""}
+        ${d.analystTarget ? `<div class="price-item"><div class="price-label">Analyst Target</div><div class="price-val ${d.analystUpside > 0 ? "up" : "down"}">$${d.analystTarget.toFixed(0)}</div></div>` : ""}
       </div>
 
-      <div class="signal-bar">
-        ${signals.map(s => `<span class="sig ${s.k}">${s.t}</span>`).join("")}
-      </div>
+      <div class="signal-bar">${signals.map(s=>`<span class="sig ${s.k}">${s.t}</span>`).join("")}</div>
+
+      ${week52HTML}
+      ${analystHTML}
+
+      ${fundHTML}
 
       <div class="card"><div class="ctitle">Entry Timing</div><div class="cbody">${entryText}</div></div>
-      <div class="card"><div class="ctitle">Key Levels</div><div class="cbody">${keyLevels}</div></div>
-      <div class="card"><div class="ctitle">Risk / Reward</div><div class="cbody">${riskReward}</div></div>
+      <div class="card"><div class="ctitle">Risk / Reward</div><div class="cbody">${riskText}</div></div>
 
-      <div class="disc">Live data from Alpha Vantage &middot; Not financial advice &middot; Free tier: 5 requests/min</div>
+      <div class="disc">Live data: Alpha Vantage &middot; Not financial advice &middot; Free tier: 5 req/min, 500/day</div>
     `;
   } catch(e) {
-    r.innerHTML = `<div class="err-box">⚠️ ${e.message}<br><br>The free Alpha Vantage tier allows 5 API calls per minute and 500 per day. Wait 60 seconds and try again, or try a different ticker.</div>`;
+    r.innerHTML = `<div class="err-box">⚠️ ${e.message}<br><br>The free Alpha Vantage tier allows 25 requests per day and 5 per minute. Wait 60 seconds and try again.</div>`;
   }
 }
 
 function switchTab(t) {
   document.getElementById("at").classList.toggle("v", t==="a");
   document.getElementById("ct").classList.toggle("v", t==="c");
-  document.querySelectorAll(".tab").forEach((el,i) => el.classList.toggle("on", (i===0&&t==="a")||(i===1&&t==="c")));
+  document.querySelectorAll(".tab").forEach((el,i)=>el.classList.toggle("on",(i===0&&t==="a")||(i===1&&t==="c")));
 }
 
-// ── PWA install ──────────────────────────────────────────────
+// ── PWA ──────────────────────────────────────────────────────
 let dP = null;
-window.addEventListener("beforeinstallprompt", e => {
-  e.preventDefault(); dP = e;
-  setTimeout(() => { if (!localStorage.getItem("idismissed")) document.getElementById("ibanner").classList.add("show"); }, 3000);
-});
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); dP=e; setTimeout(()=>{ if(!localStorage.getItem("idismissed")) document.getElementById("ibanner").classList.add("show"); },3000); });
 function installApp() { if(dP){ dP.prompt(); dP.userChoice.then(()=>{ dP=null; document.getElementById("ibanner").classList.remove("show"); }); } }
 function dismissI() { document.getElementById("ibanner").classList.remove("show"); localStorage.setItem("idismissed","1"); }
-const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-if (isIOS && !window.navigator.standalone) {
-  setTimeout(() => { if (!localStorage.getItem("iostipShown")) { document.getElementById("iostip").classList.add("show"); localStorage.setItem("iostipShown","1"); } }, 3000);
+if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !window.navigator.standalone) {
+  setTimeout(()=>{ if(!localStorage.getItem("iostipShown")){ document.getElementById("iostip").classList.add("show"); localStorage.setItem("iostipShown","1"); } },3000);
 }
 if ("serviceWorker" in navigator) {
-  const sw = `const C="et-v2";self.addEventListener("install",e=>e.waitUntil(caches.open(C).then(c=>c.addAll(["./"]))));self.addEventListener("fetch",e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>caches.match("./")))));`;
+  const sw=`const C="et-v3";self.addEventListener("install",e=>e.waitUntil(caches.open(C).then(c=>c.addAll(["./"]))));self.addEventListener("fetch",e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>caches.match("./")))));`;
   navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:"application/javascript"}))).catch(()=>{});
 }
 upS();
