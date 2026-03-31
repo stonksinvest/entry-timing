@@ -140,6 +140,8 @@ input::placeholder { color: #4a3f2f; }
 <script>
 const AV_KEY = "78L3SVHLY4BTE2Q4";
 const TICKERS = ["SPY","QQQ","AAPL","NVDA","MSFT","VTI","AMZN","TSLA","BRK.B","GOOGL","META","JPM"];
+// Ticker aliases — map common mistakes to correct symbols
+const ALIASES = {"GOOG":"GOOGL","GOOGLE":"GOOGL","BERKSHIRE":"BRK.B","BRKB":"BRK.B","AMAZON":"AMZN","APPLE":"AAPL","NVIDIA":"NVDA","MICROSOFT":"MSFT","TESLA":"TSLA","META PLATFORMS":"META"};
 const CACHE_TTL = 15 * 60 * 1000;
 
 // ── Cache ────────────────────────────────────────────────────
@@ -204,66 +206,89 @@ function computeRSI(prices, period=14) {
   return 100 - (100/(1+rs));
 }
 
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
 async function fetchAll(sym) {
   // Check cache first — no API calls needed
   const cached = cacheGet(sym);
   if (cached) return cached;
 
-  // Check we have enough calls left (need 2)
-  if (callsLeft() < 2) throw new Error("daily_limit");
+  // Check we have enough calls left (need at least 1)
+  if (callsLeft() < 1) throw new Error("daily_limit");
 
-  // Call 1: OVERVIEW — gives fundamentals, analyst data, 52w range
-  const overview = await avFetch({ function: "OVERVIEW", symbol: sym });
-  addUsage(1);
-
-  if (!overview.Symbol) throw new Error("No data found for \"" + sym + "\". Check the ticker symbol.");
-
-  // Call 2: Daily prices — we compute SMA and RSI ourselves from this
-  const daily = await avFetch({ function: "TIME_SERIES_DAILY", symbol: sym, outputsize: "compact" });
+  // Call 1: Daily prices — works for stocks AND ETFs, compute SMA/RSI from this
+  const daily = await avFetch({ function: "TIME_SERIES_DAILY", symbol: sym, outputsize: "full" });
   addUsage(1);
 
   const series = daily["Time Series (Daily)"];
-  if (!series) throw new Error("Could not load price data for " + sym);
+  if (!series) {
+    // Could be an invalid ticker or API issue
+    const msg = daily["Error Message"] || daily["Note"] || daily["Information"];
+    if (msg && (msg.includes("call frequency") || msg.includes("Thank you"))) throw new Error("rate_limit");
+    throw new Error("No data found for \"" + sym + "\". Try GOOGL for Google, AMZN for Amazon, or check the exact ticker.");
+  }
 
   const dates = Object.keys(series).sort();
   const closes = dates.map(d => parseFloat(series[d]["4. close"]));
   const latest = series[dates[dates.length-1]];
-  const prev = series[dates[dates.length-2]];
+  const prev   = series[dates[dates.length-2]];
 
-  const price = parseFloat(latest["4. close"]);
+  const price     = parseFloat(latest["4. close"]);
   const prevClose = parseFloat(prev["4. close"]);
   const changePct = ((price - prevClose) / prevClose) * 100;
 
+  // Compute 52w high/low from actual price data
+  const year = closes.slice(-252);
+  const week52High = Math.max(...year);
+  const week52Low  = Math.min(...year);
+
   const result = {
     sym,
-    name:          overview.Name || sym,
-    sector:        overview.Sector || null,
-    price,
-    prevClose,
-    changePct,
+    name:          sym,
+    sector:        null,
+    price, prevClose, changePct,
     high:          parseFloat(latest["2. high"]),
     low:           parseFloat(latest["3. low"]),
     sma50:         computeSMA(closes, 50),
     sma200:        computeSMA(closes, 200),
     rsi:           computeRSI(closes, 14),
-    week52High:    overview["52WeekHigh"]       ? parseFloat(overview["52WeekHigh"])       : null,
-    week52Low:     overview["52WeekLow"]        ? parseFloat(overview["52WeekLow"])        : null,
-    pe:            overview["PERatio"]          ? parseFloat(overview["PERatio"])          : null,
-    fwdPE:         overview["ForwardPE"]        ? parseFloat(overview["ForwardPE"])        : null,
-    eps:           overview["EPS"]              ? parseFloat(overview["EPS"])              : null,
-    beta:          overview["Beta"]             ? parseFloat(overview["Beta"])             : null,
-    marketCap:     overview["MarketCapitalization"] ? parseInt(overview["MarketCapitalization"]) : null,
-    dividendYield: overview["DividendYield"]    ? parseFloat(overview["DividendYield"])    : null,
-    profitMargin:  overview["ProfitMargin"]     ? parseFloat(overview["ProfitMargin"])     : null,
-    revenueGrowth: overview["QuarterlyRevenueGrowthYOY"] ? parseFloat(overview["QuarterlyRevenueGrowthYOY"]) : null,
-    analystTarget: overview["AnalystTargetPrice"] ? parseFloat(overview["AnalystTargetPrice"]) : null,
-    analystBuy:    (parseInt(overview["AnalystRatingStrongBuy"])||0) + (parseInt(overview["AnalystRatingBuy"])||0),
-    analystHold:   parseInt(overview["AnalystRatingHold"]) || 0,
-    analystSell:   (parseInt(overview["AnalystRatingSell"])||0) + (parseInt(overview["AnalystRatingStrongSell"])||0),
+    week52High, week52Low,
+    pe: null, fwdPE: null, eps: null, beta: null,
+    marketCap: null, dividendYield: null,
+    profitMargin: null, revenueGrowth: null,
+    analystTarget: null, analystBuy: 0, analystHold: 0, analystSell: 0,
+    totalAnalysts: 0,
     callsUsedToday: getUsage().count,
   };
-  result.totalAnalysts = result.analystBuy + result.analystHold + result.analystSell;
 
+  // Call 2: OVERVIEW for stocks only (ETFs return empty — gracefully skip)
+  if (callsLeft() >= 1) {
+    await sleep(13000); // wait 13s to stay under 5/min rate limit
+    try {
+      const overview = await avFetch({ function: "OVERVIEW", symbol: sym });
+      addUsage(1);
+      // GOOGL, BRK.B and some others return Symbol as the class name not empty
+      if (overview && overview.Symbol && overview.Name) {
+        result.name          = overview.Name || sym;
+        result.sector        = overview.Sector || null;
+        result.pe            = overview["PERatio"]          ? parseFloat(overview["PERatio"])          : null;
+        result.fwdPE         = overview["ForwardPE"]        ? parseFloat(overview["ForwardPE"])        : null;
+        result.eps           = overview["EPS"]              ? parseFloat(overview["EPS"])              : null;
+        result.beta          = overview["Beta"]             ? parseFloat(overview["Beta"])             : null;
+        result.marketCap     = overview["MarketCapitalization"] ? parseInt(overview["MarketCapitalization"]) : null;
+        result.dividendYield = overview["DividendYield"]    ? parseFloat(overview["DividendYield"])    : null;
+        result.profitMargin  = overview["ProfitMargin"]     ? parseFloat(overview["ProfitMargin"])     : null;
+        result.revenueGrowth = overview["QuarterlyRevenueGrowthYOY"] ? parseFloat(overview["QuarterlyRevenueGrowthYOY"]) : null;
+        result.analystTarget = overview["AnalystTargetPrice"] ? parseFloat(overview["AnalystTargetPrice"]) : null;
+        result.analystBuy    = (parseInt(overview["AnalystRatingStrongBuy"])||0) + (parseInt(overview["AnalystRatingBuy"])||0);
+        result.analystHold   = parseInt(overview["AnalystRatingHold"]) || 0;
+        result.analystSell   = (parseInt(overview["AnalystRatingSell"])||0) + (parseInt(overview["AnalystRatingStrongSell"])||0);
+        result.totalAnalysts = result.analystBuy + result.analystHold + result.analystSell;
+      }
+    } catch(e) { /* overview failed — that's fine, we still have price data */ }
+  }
+
+  result.callsUsedToday = getUsage().count;
   cacheSet(sym, result);
   return result;
 }
@@ -383,13 +408,15 @@ function getSignals(d) {
 
 // ── Main ─────────────────────────────────────────────────────
 async function go() {
-  const sym = document.getElementById("ti").value.trim().toUpperCase();
+  let sym = document.getElementById("ti").value.trim().toUpperCase();
   if (!sym) return;
+  sym = ALIASES[sym] || sym; // fix common mistakes
+  document.getElementById("ti").value = sym; // show corrected ticker
   document.getElementById("empty").style.display = "none";
   const r = document.getElementById("result");
   r.className = "v";
   const isCached = !!cacheGet(sym);
-  r.innerHTML = '<div class="loading-box">'+(isCached?"Loading "+sym+" from cache":"Fetching live data for "+sym)+'…<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
+  r.innerHTML = '<div class="loading-box">'+(isCached?"Loading "+sym+" from cache…":"Fetching data for "+sym+"… (15-20 sec)")+'<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>'+(isCached?"":'<br><span style="font-size:11px;color:#3a3020;margin-top:8px;display:block">Waiting between API calls to avoid rate limiting</span>')+'</div>';
 
   try {
     const d = await fetchAll(sym);
